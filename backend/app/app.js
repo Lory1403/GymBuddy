@@ -2,8 +2,8 @@ const express = require('express');
 const app = express();
 
 
-// const authentication = require('./authentication.js');
-// const tokenChecker = require('./tokenChecker.js');
+const authentication = require('./authentication.js');
+const tokenChecker = require('./tokenChecker.js');
 
 
 app.use(express.json());
@@ -11,17 +11,20 @@ app.use(express.urlencoded({ extended: true }));
 
 
 
-// // api nostre protette
-// app.use('/api/v1/palestre', tokenChecker);
-// app.use('/api/v1/abbonamento', tokenChecker);
-// app.use('/api/v1/calendario', tokenChecker);
+// api nostre protette
+app.use('/api/v1/palestre', tokenChecker);
+app.use('/api/v1/abbonamento', tokenChecker);
+app.use('/api/v1/calendario', tokenChecker);
+app.use('api/v1/utenti', tokenChecker);
 
 
-// // api nostre che usiamo
-// app.use('/api/v1/authentications', authentication);
-// app.use('/api/v1/palestre', palestre);
-// app.use('/api/v1/abbonamento', abbonamento);
-// app.use('/api/v1/calendario', calendario); // dentro a calendario usiamo la api di appuntamento
+
+// api nostre che usiamo
+app.use('/api/v1/authentications', authentication);
+app.use('api/v1/utenti', utenti);
+app.use('/api/v1/palestre', palestre);
+app.use('/api/v1/abbonamento', abbonamento);
+app.use('/api/v1/calendario', calendario); // dentro a calendario usiamo la api di appuntamento
 
 
 
