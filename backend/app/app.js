@@ -1,5 +1,10 @@
 const express = require('express');
 const app = express();
+const user = require('./models/user');
+const passport = require('passport');
+require('./google/passportLocal')(passport);
+require('./google/googleAuth')(passport);
+
 
 
 const authentication = require('./authentication.js');
@@ -48,16 +53,14 @@ app.post('/login', (req,res,next) => {
 app.post('/logout', (req,res) => {
     req.logout();
     req.session.destroy(function(err) {
-        res.redirect('/');
+        res.redirect('/api/v1/hello');
     });
 });
 
-app.get('/google', (req,res) => {
+app.get('/google', passport.authenticate('google', { scope : ['profile', 'email',] }));
 
-});
-
-app.get('/google/callback', (req,res) => {
-
+app.get('/google/callback', passport.authenticate('google', { failureRedirect : '/login' }), (req,res) => {
+    res.redirect('/profile');
 });
 
 app.get('/api/v1/hello', (req,res) => {

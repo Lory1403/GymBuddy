@@ -1,1 +1,0 @@
-var GoogleStrategy = require('passport-google-a')

@@ -126,4 +126,6 @@ $RECYCLE.BIN/
 !.vscode/launch.json
 !.vscode/extensions.json
 
+#app/config/googleData.js
+
 # End of https://www.gitignore.io/api/node,windows,linux,visualstudiocode
