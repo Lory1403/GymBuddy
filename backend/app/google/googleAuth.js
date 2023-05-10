@@ -1,12 +1,11 @@
+var express = require('express');
 var GoogleStrategy = require('passport-google-oauth20').Strategy; //https://www.passportjs.org/reference/
 const user = require('../models/utente');
-const clientID = require('../config/googleData').clientId;
-const clientSecret = require('../config/googleData').clientSecret;
 
 module.exports = function(passport) {
     passport.use(new GoogleStrategy({
-        clientID : clientID,
-        clientSecret : clientSecret,
+        clientID : process.env['GOOGLE_CLIENT_ID'],
+        clientSecret : process.env['GOOGLE_CLIENT_SECRET'],
         callbackURL : "http://localhost:8080/google/callback"
     }, (accessToken, refreshToken, profile, done) => {
         console.log(profile.emails[0].value);
@@ -26,7 +25,7 @@ module.exports = function(passport) {
                     email: profile.emails[0].value,
                     idCalendario: null, // crea calendario
                     chat: null,
-                    role: null, // {reg, abb, amm, sala}
+                    role: "reg", // {reg, abb, amm, sala}
                     abbonamento: null,
                     idPalestra: null
                 }).save(function (err, data) {
@@ -48,3 +47,16 @@ module.exports = function(passport) {
         });
     });
 }
+
+var router = express.Router();
+
+router.get('/login', function(req, res, next) {
+    res.render('login');
+});
+
+router.post('/logout', function(req, res, next) {
+    req.logout();
+    res.redirect('/');  
+});
+
+module.exports = router;
