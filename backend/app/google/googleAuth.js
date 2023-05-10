@@ -1,5 +1,5 @@
-var GoogleStrategy = require('passport-google-oauth20').Strategy;
-const user = require('../models/user');
+var GoogleStrategy = require('passport-google-oauth20').Strategy; //https://www.passportjs.org/reference/
+const user = require('../models/utente');
 const clientID = require('../config/googleData').clientId;
 const clientSecret = require('../config/googleData').clientSecret;
 
@@ -20,12 +20,15 @@ module.exports = function(passport) {
             } else {
                 // crea un utente
                 user({
-                    username : profile.displayName,
-                    email : profile.emails[0].value,
-                    googleId : profile.id,
-                    password : null,        // non credo serva
-                    provider : 'google',    // non credo serva
-                    isVerified : true,
+                    googleId: profile.id,
+                    nome: profile.name.givenName,
+                    cognome: profile.name.familyName,
+                    email: profile.emails[0].value,
+                    idCalendario: null, // crea calendario
+                    chat: null,
+                    role: null, // {reg, abb, amm, sala}
+                    abbonamento: null,
+                    idPalestra: null
                 }).save(function (err, data) {
                     return done(null, data);
                 })
