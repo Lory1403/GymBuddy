@@ -2,7 +2,6 @@ var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
 new Schema({
-    idPalestra: String,
     nome: String,
     personale: [String],
     indirizzo: {
@@ -12,8 +11,8 @@ new Schema({
         paese: String,
         cap: Number
     },
-    idBacheca: String,
-    idVetrina: String,
+ //   idBacheca: String,
+ //   idVetrina: String,
     calendariCorsi: [String],
     abbonamentiDisponibili: [String]
 })
