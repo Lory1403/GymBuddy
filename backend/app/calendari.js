@@ -10,7 +10,7 @@ router.get('', async (req, res) => {
 
     calendari = calendari.map( (calendario) => {
         return {
-            self: '/api/v1/calendari/' + calendario.idCalendario,
+            self: '/api/v1/calendari/' + calendario.id,
             nome: calendario.nome
         };
     });
@@ -23,8 +23,9 @@ router.get('/:id', async (req, res) => {
 
     let calendario = await Calendario.findById(req.params.id);
 
+
     res.status(200).json({
-        self: 'api/v1/calendari/' + calendario.idCalendario,
+        self: 'api/v1/calendari/' + calendario.id,
         nome: calendario.nome,
         appuntamenti: calendario.appuntamenti
     })
@@ -48,12 +49,12 @@ router.delete('/:id', async (req, res) => {
 router.post('', async (req, res) => {
 
 	let calendario = new Calendario({
-        nome: req.params.nome
+        nome: req.body.nome
     });
     
 	calendario = await calendario.save();
     
-    let idCalendario = calendario.idCalendario;
+    let idCalendario = calendario.id;
 
     console.log('calendar saved successfully');
 
