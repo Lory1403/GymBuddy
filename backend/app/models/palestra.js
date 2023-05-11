@@ -1,7 +1,7 @@
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
-new Schema({
+module.exports = mongoose.model('palestra', new Schema({
     nome: String,
     personale: [String],
     indirizzo: {
@@ -15,6 +15,4 @@ new Schema({
  //   idVetrina: String,
     calendariCorsi: [String],
     abbonamentiDisponibili: [String]
-})
-
-module.exports = mongoose.model('palestra', Schema);
+}));
