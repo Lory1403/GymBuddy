@@ -3,13 +3,14 @@ var Schema = mongoose.Schema;
 
 // tutti i tipi di utenti sono unificati in un solo tipo di utente
 // se degli attributi non lo riguardano vengono impostati a null
-new Schema({
+
+module.exports = mongoose.model('utente', new Schema({
     googleId: String,
     nome: String,
     cognome: String,
     email: String,
     idCalendario: String,
-    chat: [String],
+    //chat: [String],
     role: String, // {reg, abb, amm, sala}
     abbonamento: {
         descrizione: String,
@@ -21,7 +22,5 @@ new Schema({
     // inseriamo propieteario schede e valutazioni direttamente nelle schede e nelle valutazioni 
     // schede: [String],
     // valutazioni: [String]
-    idPalestra: String,
-})
-
-module.exports = mongoose.model('utente', Schema);
+    idPalestra: String
+}));

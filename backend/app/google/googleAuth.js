@@ -1,62 +1,75 @@
 var express = require('express');
+var passport = require('passport');
+var mongoose = require('mongoose');
+var User = require('../models/utente');
+var Calendario = require('../models/calendario');
 var GoogleStrategy = require('passport-google-oauth20').Strategy; //https://www.passportjs.org/reference/
-const user = require('../models/utente');
+//var User = mongoose.model('User', utente); //require('../models/user');
 
-module.exports = function(passport) {
-    passport.use(new GoogleStrategy({
-        clientID : process.env['GOOGLE_CLIENT_ID'],
-        clientSecret : process.env['GOOGLE_CLIENT_SECRET'],
-        callbackURL : "http://localhost:8080/google/callback"
-    }, (accessToken, refreshToken, profile, done) => {
-        console.log(profile.emails[0].value);
+var app = express();
 
-        // trovare se esiste un utente con questa email
-        user.findOne({ email: profile.emails[0].value }).then((data) => {
-            if(data) {
-                // esiste
-                // aggiorna dati
-                return done(null, data);
-            } else {
-                // crea un utente
-                user({
-                    googleId: profile.id,
-                    nome: profile.name.givenName,
-                    cognome: profile.name.familyName,
-                    email: profile.emails[0].value,
-                    idCalendario: null, // crea calendario
-                    chat: null,
-                    role: "reg", // {reg, abb, amm, sala}
-                    abbonamento: null,
-                    idPalestra: null
-                }).save(function (err, data) {
-                    return done(null, data);
-                })
-            }
-        });
+passport.use(new GoogleStrategy({
+    clientID : process.env.GOOGLE_CLIENT_ID,
+    clientSecret : process.env.GOOGLE_CLIENT_SECRET,
+    callbackURL : "/auth/google/callback",
+    state : true
+  }, async (accessToken, refreshToken, profile, done) => {
+    // Verifica se l'utente esiste già nel database
+    var existingUser = await User.findOne({ googleId: profile.id });
+  
+    if (existingUser) {
+      // Se l'utente esiste già, lo restituisce
+      done(null, existingUser);
+    } else {
+
+        var calendario = await new Calendario({
+            nome: ''
+        }).save();
+
+      // Crea un nuovo utente nel database
+      var newUser = await new User({
+        googleId: profile.id,
+        nome: profile.name.givenName,
+        cognome: profile.name.familyName,
+        email: profile.emails[0].value,
+        idCalendario: calendario._id, // crea calendario
+        role: 'reg', // {reg, abb, amm, sala}
+      }).save();
+
+      session.User = newUser;
+
+      done(null, newUser);
     }
+}));
 
-    ));
-
-    passport.serializeUser(function (user, done) {
-        done(null, user.id);
-    });
-
-    passport.deserializeUser(function (id, done) {
-        user.findById(id, function (err, user) {
-            done(err, user);
-        });
-    });
-}
-
-var router = express.Router();
-
-router.get('/login', function(req, res, next) {
-    res.render('login');
+passport.serializeUser(function (user, done) {
+    done(null, user.id);
 });
 
-router.post('/logout', function(req, res, next) {
-    req.logout();
-    res.redirect('/');  
+// passport.deserializeUser(async function (id, done) {
+//     User.findById(id, async function (err, user) {
+//         done(err, user);
+//     });
+// });
+
+// passport.deserializeUser(async function(id, done) {
+//     User.findById(id, async function(err, user) {
+//       if (err) return done(err);
+//       if (!user) return done(null, false);
+//       done(null, user);
+//     });
+// });
+
+passport.deserializeUser((id, done) => {
+    User.findById(id).then(user => {
+      console.log(user);
+        if (!user) {
+        return done(null, false);
+      }
+      done(null, user);
+    }).catch(err => {
+        done(err);
+    });
 });
 
-module.exports = router;
+module.exports = passport;
