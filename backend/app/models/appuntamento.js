@@ -1,12 +1,9 @@
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
-new Schema({
-    idAppuntamento: String,
+module.exports = mongoose.model('appuntamento', new Schema({
     involves: [String],
     titolo: String,
     descrizione: String,
     data: Date
-})
-
-module.exports = mongoose.model('appuntamento', Schema);
+}));

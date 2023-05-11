@@ -1,12 +1,9 @@
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
-new Schema({
-    idAbbonamento: String,
+module.exports = mongoose.model('abbonamento', new Schema({
     descrizione: String,
     dataInizio: Date,
     durata: Number,
-    palestra: String //idPalestra
-})
-
-module.exports = mongoose.model('abbonamento', Schema);
+    idPalestra: String
+}));

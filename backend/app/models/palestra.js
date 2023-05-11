@@ -1,8 +1,7 @@
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
-new Schema({
-    idPalestra: String,
+module.exports = mongoose.model('palestra', new Schema({
     nome: String,
     personale: [String],
     indirizzo: {
@@ -12,10 +11,8 @@ new Schema({
         paese: String,
         cap: Number
     },
-    idBacheca: String,
-    idVetrina: String,
+ //   idBacheca: String,
+ //   idVetrina: String,
     calendariCorsi: [String],
     abbonamentiDisponibili: [String]
-})
-
-module.exports = mongoose.model('palestra', Schema);
+}));
