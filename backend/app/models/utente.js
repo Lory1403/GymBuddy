@@ -9,6 +9,7 @@ module.exports = mongoose.model('utente', new Schema({
     nome: String,
     cognome: String,
     email: String,
+    password: String, // solo se utente registrato tramite form
     idCalendario: String,
     //chat: [String],
     role: String, // {reg, abb, amm, sala}

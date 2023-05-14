@@ -1,71 +1,44 @@
-const express = require('express');
-const router = express.Router;
-var session = require('express-session');
+const express = require("express");
+const router = express.Router();
+const utente = require("./models/utente"); // get our mongoose model
+const tokenCreator = require("./tokenCreator.js");
+//var user;
+//const jwt = require("jsonwebtoken"); // used to create, sign, and verify tokens
 
-router.use(session({
-    secret: process.env.GOOGLE_CLIENT_SECRET,
-    resave: false,
-    saveUninitialized: false,
-    cookie: {
-        maxAge: 360000
-    }
-}));
-router.use(passport.initialize());
-router.use(passport.session());
+// ---------------------------------------------------------
+// route to authenticate and get a new token
+// ---------------------------------------------------------
 
-router.get('/auth/google',
-  passport.authenticate('google', { scope : ['profile', 'email',] })
-);
-
-router.get('/auth/google/callback',
-  passport.authenticate('google', {
-    successRedirect: '/',
-    failureRedirect: '/login'
-  }),
-  (req, res) => {
-
-    // Salva l'utente in sessione
-    req.session.user = req.user;
-    res.redirect('/');
-  }
-);
-
-// Middleware per verificare se l'utente è autenticato
-const checkAuthenticated = (req, res, next) => {
-  if (req.isAuthenticated()) {
-    return next();
-  }
-
-  res.redirect('/login');
+const creaToken = (req, res, next) => {
+  router.use(tokenCreator(req, user.email, user._id, res));
+  return next();
 };
 
-router.get('/', checkAuthenticated, (req, res) => {
-  // Accede ai dati dell'utente dalla sessione
-  res.send(`Benvenuto ${req.user.nome}!`);
-});
+router.post("", creaToken, async function (req, res) {
+  // find the user
+  var user = await utente.findOne({
+    googleId: req.body.id
+  });
 
-router.get('/login', (req, res) => {
-  res.send('Effettua il login con Google: <a href="/auth/google">Login</a>');
-});
-
-//autenticazione con Google
-router.post('/login', (req,res,next) => {
-    passport.authenticate('local', {
-        failureRedirect: '/login',
-        successRedirect: '/api/v1/hello',
-        failureFlash: true,
-    })(req,res,next);
-});
-
-router.post('/logout', (req,res) => {
-    req.logout();
-    req.session.destroy(function(err) {
-        res.redirect('/api/v1/hello');
+  // user not found
+  if (!user) {
+    res.status(401);
+    res.json({
+      success: false,
+      message: "Authentication failed. User not found.",
     });
+    return;
+  }
+
+  // check if password matches
+  if (user.password != req.body.password) {
+    res.status(401);
+    res.json({
+      success: false,
+      message: "Authentication failed. Wrong password.",
+    });
+    return;
+  }
 });
 
-router.get('/google', passport.authenticate('google', { scope : ['profile', 'email',] }));
-
-router.get('/google/callback', passport.authenticate('google', { failureRedirect : '/login' }), (req,res) => {
-    res.redirect('/profile');
-});
+module.exports = router;
