@@ -9,15 +9,10 @@ const tokenCreator = require("./tokenCreator.js");
 // route to authenticate and get a new token
 // ---------------------------------------------------------
 
-const creaToken = (req, res, next) => {
-  router.use(tokenCreator(req, user.email, user._id, res));
-  return next();
-};
-
-router.post("", creaToken, async function (req, res) {
+router.post("", async function (req, res) {
   // find the user
   var user = await utente.findOne({
-    googleId: req.body.id
+    googleId: req.body.id,
   });
 
   // user not found
@@ -39,6 +34,8 @@ router.post("", creaToken, async function (req, res) {
     });
     return;
   }
+
+  tokenCreator(req, user, res);
 });
 
 module.exports = router;

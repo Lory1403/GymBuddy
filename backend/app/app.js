@@ -10,6 +10,7 @@ var User = require("./models/utente");
 
 const tokenChecker = require("./tokenChecker.js");
 const utente = require("./utenti.js");
+const tokenCreator = require("./tokenCreator.js");
 
 
 app.use(express.json());
@@ -57,14 +58,13 @@ app.get(
 app.get(
   "/auth/google/callback",
   passport.authenticate("google", {
-    successRedirect: "/",
-    failureRedirect: "/login",
+    //successRedirect: "/",
+    failureRedirect: "/login"
   }),
   (req, res) => {
     // Salva l'utente in sessione
+    tokenCreator(req, req.user, res);
     req.session.user = req.user;
-    app.use()
-    res.redirect("/");
   }
 );
 
