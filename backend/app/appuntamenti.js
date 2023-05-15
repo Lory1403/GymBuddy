@@ -31,7 +31,7 @@ router.get('/:id', async (req, res) => {
 
 
     res.status(200).json({
-        self: 'api/v1/appuntamneti/' + calendario.idCalendario,
+        self: 'api/v1/appuntamenti/' + calendario.idCalendario,
         nome: calendario.nome,
         appuntamenti: calendario.appuntamenti
     })
