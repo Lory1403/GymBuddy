@@ -5,10 +5,21 @@ const Calendario = require('./models/calendario');
 
 
 
+router.get('/me', async (req,res) => {
 
+    if(!req.loggedUser) {
+        return;
+    }
+
+    let utente = await Utente.findOne({email: loggedUser.email});
+
+    res.status(200).json({
+        self: '/api/v1/students/' + utente._id,
+        email: utente.email
+    });
+})
 
 // post per creare un utente
-
 router.post('', async (req,res) => {
 
     let calendario = new Calendario({
@@ -26,18 +37,11 @@ router.post('', async (req,res) => {
     calendario.save();
     utente.save();
 
-    idUtente = utente._id;
 
     console.log('user saved successfully');
 
-    res.location("/api/v1/utenti/" + idUtente).status(201).send();
+    res.location("/api/v1/utenti/" + utente._id).status(201).send();
 });
 
-
-// metodi da aggiungere:
-// prenota appuntamento
-// disdici appuntamento
-// visualizza calendari (solo i nomi)
-// visualizza gli appuntamenti di un calendario
 
 module.exports = router;
