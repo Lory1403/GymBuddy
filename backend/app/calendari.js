@@ -5,7 +5,6 @@ const Calendario = require('./models/calendario');
 // get tutti i calendari
 router.get('', async (req, res) => {
     
-    // https://mongoosejs.com/docs/api.html#model_Model.find
     let calendari = await Calendario.find({});
 
     calendari = calendari.map( (calendario) => {
@@ -54,7 +53,7 @@ router.post('', async (req, res) => {
     
 	calendario = await calendario.save();
     
-    let idCalendario = calendario.id;
+    let idCalendario = calendario._id;
 
     console.log('calendar saved successfully');
 

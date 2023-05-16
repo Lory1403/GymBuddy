@@ -4,11 +4,10 @@ var Schema = mongoose.Schema;
 // tutti i tipi di utenti sono unificati in un solo tipo di utente
 // se degli attributi non lo riguardano vengono impostati a null
 module.exports = mongoose.model('utente', new Schema({
-    idUtente: String,
     nome: String,
     cognome: String,
     idCalendario: String,
-    chat: [String],
+    // chat: [String],
     role: String,
     abbonamento: {
         descrizione: String,
