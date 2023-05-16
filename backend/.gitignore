@@ -223,4 +223,13 @@ $RECYCLE.BIN/
 # Windows shortcuts
 *.lnk
 
+### VisualStudioCode ###
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+
+#app/config/googleData.js
+
 # End of https://www.toptal.com/developers/gitignore/api/visualstudiocode,windows,macos,node
