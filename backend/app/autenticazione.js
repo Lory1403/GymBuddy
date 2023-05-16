@@ -35,7 +35,7 @@ router.post("", async function (req, res) {
     return;
   }
 
-  tokenCreator(req, user, res);
+  tokenCreator(user, res);
 });
 
 module.exports = router;

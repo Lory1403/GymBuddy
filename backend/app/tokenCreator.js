@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 const jwt = require("jsonwebtoken"); // used to create, sign, and verify tokens
 
-const tokenCreator = function (req, user, res, next) {
+const tokenCreator = function (user, res) {
     var payload = {
         email: user.email,
         googleID: user.id

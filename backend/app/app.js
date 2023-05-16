@@ -1,17 +1,15 @@
 var env = require("dotenv").config();
 const express = require("express");
 const app = express();
-const session = require("express-session");
 //const user = require('./models/utente');
 //const passport = require('passport');
-const autenticazione = require('./autenticazione.js');
+const autenticazione = require('./autenticazione');
 var passport = require("./google/googleAuth");
 var User = require("./models/utente");
+var autenticazioneGoogle = require('./google/autenticazioneGoogle');
 
 const tokenChecker = require("./tokenChecker.js");
 const utente = require("./utenti.js");
-const tokenCreator = require("./tokenCreator.js");
-
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -22,7 +20,8 @@ app.use((req, res, next) => {
 });
 
 app.use('/api/v1/autenticazioni', autenticazione);
-app.use('/api/v1/utenti', utente)
+app.use('/api/v1/utenti', utente);
+app.use('/auth', autenticazioneGoogle);
 
 // // api nostre protette
 // app.use("/api/v1/abbonamento", tokenChecker);
@@ -36,84 +35,6 @@ app.use('/api/v1/utenti', utente)
 // app.use('/api/v1/abbonamento', abbonamento);
 // app.use('/api/v1/calendario', calendario); // dentro a calendario usiamo la api di appuntamento
 
-app.use(
-  session({
-    secret: process.env.GOOGLE_CLIENT_SECRET,
-    resave: false,
-    saveUninitialized: false,
-    cookie: {
-      maxAge: 10000,
-    },
-  })
-);
-
-app.use(passport.initialize());
-app.use(passport.session());
-
-app.get(
-  "/auth/google",
-  passport.authenticate("google", { scope: ["profile", "email"] })
-);
-
-app.get(
-  "/auth/google/callback",
-  passport.authenticate("google", {
-    //successRedirect: "/",
-    failureRedirect: "/login"
-  }),
-  (req, res) => {
-    // Salva l'utente in sessione
-    tokenCreator(req, req.user, res);
-    req.session.user = req.user;
-  }
-);
-
-// Middleware per verificare se l'utente è autenticato
-const checkAuthenticated = (req, res, next) => {
-  if (req.isAuthenticated()) {
-    return next();
-  }
-  
-  res.redirect("/login");
-};
-
-app.get("/", checkAuthenticated, (req, res) => {
-  // Accede ai dati dell'utente dalla sessione
-  res.send(`Benvenuto ${req.user.nome}!`);
-});
-
-app.get("/login", (req, res) => {
-  res.send('Effettua il login con Google: <a href="/auth/google">Login</a>');
-});
-
-//autenticazione con Google
-app.post("/login", (req, res, next) => {
-  passport.authenticate("local", {
-    failureRedirect: "/login",
-    successRedirect: "/api/v1/hello",
-    failureFlash: true,
-  })(req, res, next);
-});
-
-app.post("/logout", (req, res) => {
-  req.logout();
-  req.session.destroy(function (err) {
-    res.redirect("/api/v1/hello");
-  });
-});
-
-app.get(
-  "/google",
-  passport.authenticate("google", { scope: ["profile", "email"] })
-);
-
-app.get(
-  "/google/callback",
-  passport.authenticate("google", { failureRedirect: "/login" }),
-  (req, res) => {
-    res.redirect("/profile");
-  }
-);
 
 app.get("/api/v1/hello", (req, res) => {
   res.json({ msg: "Hello world!" });

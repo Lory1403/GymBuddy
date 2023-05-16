@@ -43,10 +43,6 @@ passport.use(
           role: "reg", // {reg, abb, amm, sala}
         }).save();
 
-        session.User = newUser;
-
-        
-
         done(null, newUser);
       }
     }
