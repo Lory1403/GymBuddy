@@ -12,6 +12,7 @@ const utenti = require("./utenti.js");
 const tokenChecker = require('./tokenChecker');
 const abbonamenti = require('./abbonamenti');
 //const palestre = require('./palestre');
+const calendari = require('./calendari');
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -36,7 +37,7 @@ app.use('/api/v1/utenti', utenti);
 app.use('/auth', autenticazioneGoogle);
 //app.use('/api/v1/palestre', palestre);
 app.use('/api/v1/abbonamenti', abbonamenti);
-//app.use('/api/v1/calendario', calendario); // dentro a calendario usiamo la api di appuntamento
+app.use('/api/v1/calendario', calendari); // dentro a calendario usiamo la api di appuntamento
 
 
 app.get("/api/v1/hello", (req, res) => {
