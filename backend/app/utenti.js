@@ -23,6 +23,20 @@ function checkPasswordStrength(password) {
     return true;
   }
 
+router.get('/me', async (req,res) => {
+
+    if(!req.loggedUser) {
+        return;
+    }
+
+    let utente = await Utente.findOne({email: loggedUser.email});
+
+    res.status(200).json({
+        self: '/api/v1/students/' + utente._id,
+        email: utente.email
+    });
+})
+
 // post per creare un utente
 router.post('', async (req,res) => {
 
@@ -69,12 +83,5 @@ router.post('', async (req,res) => {
 
     res.location("/utenti/" + utente._id).status(201).send();
 });
-
-
-// metodi da aggiungere:
-// prenota appuntamento
-// disdici appuntamento
-// visualizza calendari (solo i nomi)
-// visualizza gli appuntamenti di un calendario
 
 module.exports = router;
