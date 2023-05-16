@@ -30,9 +30,11 @@ router.get('/:id', async (req, res) => {
         };
     });
 
-
-    res.status(200).json(appuntamenti);
-
+    res.status(200).json({
+        self: 'api/v1/appuntamenti/' + calendario.idCalendario,
+        nome: calendario.nome,
+        appuntamenti: calendario.appuntamenti
+    })
 })
 
 //in req ci sono id di tutti i calendari coinvolti incluso quello di chi sta creando l'appuntamento
