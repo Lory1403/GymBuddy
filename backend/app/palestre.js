@@ -10,13 +10,13 @@ router.get('', (req, res) => {
     });
 });
 
+// get palestra dato id
+
 // post per creare un utente
 router.post('', async (req,res) => {
 
     // bisogna creare un utente amministrativo che gestisce la palestra
     /*
-
-
 
     */
 
@@ -32,5 +32,7 @@ router.post('', async (req,res) => {
 
     res.location("/api/v1/palestra/" + palestra._id).status(201).send();
 });
+
+// delete by id
 
 module.exports = router;
