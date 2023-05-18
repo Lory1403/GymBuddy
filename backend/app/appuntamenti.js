@@ -14,27 +14,43 @@ router.get('', (req, res) => {
 
 
 // get by userid NON SO SE FUNZIONA
-router.get('/:id', async (req, res) => {
+router.get('/byuser', async (req, res) => {
 
-    let utente = await Utente.find(req.params.usrid);
+    let calendario = await Calendario.findById(utente.idCalendario);
 
-    let calendario = await Calendario.find(utente.idCalendario);
-
-
-    let appuntamenti = calendario.appuntamenti.map( (appuntamento) => {
+    let appuntamenti = await Promise.all(calendario.appuntamenti.map(async (appuntamentoID) => {
+        let appuntamento = await Appuntamento.findById(appuntamentoID);
+        console.log(appuntamento);
+    
         return {
             self: '/api/v1/appuntamenti/' + appuntamento._id,
-            titolo: String,
-            descrizione: String,
-            data: Date
+            titolo: appuntamento.titolo,
+            descrizione: appuntamento.descrizione,
+            data: appuntamento.data
         };
-    });
+    }));
 
-    res.status(200).json({
-        self: 'api/v1/appuntamenti/' + calendario.idCalendario,
-        nome: calendario.nome,
-        appuntamenti: calendario.appuntamenti
-    })
+    res.status(200).json(appuntamenti);
+})
+
+router.get('/bycalendar', async (req, res) => {
+
+    let calendario = await Calendario.find(req.params.calendarID);
+
+
+    let appuntamenti = await Promise.all(calendario.appuntamenti.map(async (appuntamentoID) => {
+        let appuntamento = await Appuntamento.findById(appuntamentoID);
+        console.log(appuntamento);
+    
+        return {
+            self: '/api/v1/appuntamenti/' + appuntamento._id,
+            titolo: appuntamento.titolo,
+            descrizione: appuntamento.descrizione,
+            data: appuntamento.data
+        };
+    }));
+
+    res.status(200).json(appuntamenti);
 })
 
 //in req ci sono id di tutti i calendari coinvolti incluso quello di chi sta creando l'appuntamento
@@ -63,7 +79,7 @@ router.post('', async (req, res)=>{
 })
 
 
-// in req c'è id dell'appuntamento da togliere
+// in req c'è _id dell'appuntamento da togliere
 router.delete('/:id', async (req, res) => {
     
     const appuntamento = await Appuntamento.findById(req.body._id);
@@ -85,6 +101,3 @@ router.delete('/:id', async (req, res) => {
 })
 
 module.exports = router;
-
-
-
