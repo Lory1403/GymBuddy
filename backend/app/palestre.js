@@ -19,12 +19,7 @@ router.get('/:id', async (req, res) => {
         self: 'api/v1/palestra/' + palestra.id,
         nome: palestra.nome,
         personale: [String],
-    indirizzo: {
-        via: palestra.via,
-        numeroCivico: palestra.numeroCivico,
-        citta: palestra.citta,
-        paese: palestra.paese,
-        cap: palestra.cap
+        indirizzo: palestra.indirizzo 
     });
 });
 
