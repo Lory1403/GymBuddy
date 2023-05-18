@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const Abbonamento = require('./models/abbonamento');
+const Utente = require('./models/utente');
 
 //Tutti gli abbonamenti
 router.get('', (req, res) => {
@@ -33,6 +34,9 @@ router.get('/:id', async (req, res) => {
 //Inserimento abbonamento
 router.post('', async (req, res)=>{
 
+    let utente = Utente.findById(req.body.id);
+
+
     const abbonamento = await new Abbonamento({
         descrizione: req.body.descrizione,
         dataInizio: req.body.dataInizio,
@@ -41,6 +45,9 @@ router.post('', async (req, res)=>{
        });
 
     abbonamento.save();
+
+    utente.abbonamento = abbonamento._id;
+    
     res.status(200).json({
         self: 'api/v1/abbonamenti/' + abbonamento._id,
         descrizione: abbonamento.descrizione,
