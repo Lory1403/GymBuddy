@@ -46,6 +46,16 @@ router.post('', async (req,res) => {
 });
 
 // delete by id
-
+router.delete('/:id', async (req, res) => {
+    let palestra = await Palestra.findById(req.params.id).exec();
+    if (!palestra) {
+        res.status(404).send();
+        console.log('Palestra not found');
+        return;
+    }
+    palestra.deleteOne();
+    console.log('Palestra removed sucessfully');
+    res.status(204).send();
+});
 
 module.exports = router;
