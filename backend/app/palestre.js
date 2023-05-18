@@ -11,6 +11,23 @@ router.get('', (req, res) => {
 });
 
 // get palestra dato id
+router.get('/:id', async (req, res) => {
+
+    let palestra = await Palestra.findById(req.params.id);
+
+    res.status(200).json({
+        self: 'api/v1/palestra/' + palestra.id,
+        nome: palestra.nome,
+        personale: [String],
+    indirizzo: {
+        via: palestra.via,
+        numeroCivico: palestra.numeroCivico,
+        citta: palestra.citta,
+        paese: palestra.paese,
+        cap: palestra.cap
+    });
+});
+
 
 // post per creare un utente
 router.post('', async (req,res) => {
@@ -34,5 +51,6 @@ router.post('', async (req,res) => {
 });
 
 // delete by id
+
 
 module.exports = router;
