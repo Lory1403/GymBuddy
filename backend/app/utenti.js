@@ -32,7 +32,7 @@ router.get('/me', async (req,res) => {
     let utente = await Utente.findOne({email: loggedUser.email});
 
     res.status(200).json({
-        self: '/api/v1/students/' + utente._id,
+        self: '/api/v1/utenti/' + utente._id,
         email: utente.email
     });
 })
@@ -42,7 +42,7 @@ router.post('', async (req,res) => {
 
     var calendario = new Calendario({
         nome: 'My calendar'
-    })
+    });
 
     var utente = new Utente({
         nome: req.body.nome,
