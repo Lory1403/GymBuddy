@@ -3,6 +3,7 @@ const router = express.Router();
 const Calendario = require('./models/calendario');
 const Palestra = require('./models/palestra');
 
+
 // get tutti i calendari
 router.get('', async (req, res) => {
     
