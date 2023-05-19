@@ -31,7 +31,7 @@ router.get('/byuser', async (req, res) => {
     }));
 
     res.status(200).json(appuntamenti);
-})
+});
 
 router.get('/bycalendar', async (req, res) => {
 
@@ -51,7 +51,7 @@ router.get('/bycalendar', async (req, res) => {
     }));
 
     res.status(200).json(appuntamenti);
-})
+});
 
 //in req ci sono id di tutti i calendari coinvolti incluso quello di chi sta creando l'appuntamento
 router.post('', async (req, res)=>{
@@ -61,7 +61,7 @@ router.post('', async (req, res)=>{
         data: req.body.date,
         descrizione: req.body.desc,
         involves: req.body.involved
-       });
+    });
 
     appuntamento.save();    
 
@@ -76,7 +76,7 @@ router.post('', async (req, res)=>{
 
     res.location("/api/v1/appuntamenti/" + appuntamento._id).status(201).send();
 
-})
+});
 
 
 // in req c'è _id dell'appuntamento da togliere
@@ -91,13 +91,13 @@ router.delete('/:id', async (req, res) => {
         calendarioUtente.appuntamenti.pull(appuntamento._id);
         console.log(calendarioUtente);
         calendarioUtente.save();
-    })
+    });
 
     appuntamento.deleteOne();
 
     console.log('Appintment removed successfully!');
 
     res.status(204).send();
-})
+});
 
 module.exports = router;

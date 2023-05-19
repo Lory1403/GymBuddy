@@ -37,10 +37,7 @@ router.post('', async (req, res) => {
         nome: req.body.nome
     }).save();
 
-    var palestra = new Palestra ({
-        nome: "aacac"
-    });
-    //var palestra = await Palestra.findById(req.body.idPalestra);
+    var palestra = await Palestra.findById(req.body.idPalestra);
 
     if (!palestra) {
         res.status(404).send();
@@ -51,14 +48,14 @@ router.post('', async (req, res) => {
     palestra.calendariCorsi.push(calendario._id);
     palestra.save();
     
-    console.log('calendar added and saved successfully');
+    console.log('Calendar added and saved successfully');
 
     res.location("/api/v1/books/" + calendario._id).status(201).send();
 });
 
 
 router.delete('/:id', async (req, res) => {
-    let calendario = await Calendario.findById(req.params.id).exec();
+    let calendario = await Calendario.findById(req.params.id);
     if (!calendario) {
         res.status(404).send();
         console.log('calendar not found');

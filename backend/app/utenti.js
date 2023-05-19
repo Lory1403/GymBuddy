@@ -35,7 +35,7 @@ router.get('/me', async (req,res) => {
         self: '/api/v1/utenti/' + utente._id,
         email: utente.email
     });
-})
+});
 
 // post per creare un utente
 router.post('', async (req,res) => {
@@ -83,5 +83,7 @@ router.post('', async (req,res) => {
 
     res.location("/utenti/" + utente._id).status(201).send();
 });
+
+// metodo per inserire utenti amministrativi in una palestra
 
 module.exports = router;
