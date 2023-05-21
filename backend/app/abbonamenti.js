@@ -50,11 +50,9 @@ router.post('', async (req, res)=>{
             descrizione: req.body.descrizione,
             dataInizio: req.body.dataInizio,
             dataFine: req.body.dataFine,
-            durata: req.body.durata,
             idPalestra: req.body.idPalestra
-        });
+        }).save();
 
-        abbonamento.save();
 
         utente.abbonamento = abbonamento._id;
         
