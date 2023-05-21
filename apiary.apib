@@ -4,202 +4,6 @@ FORMAT: 1A
 
 Documentazioni delle Api di GymBuddy
 
-## Abbonamenti [/api/v1/abbonamenti]
-
-### Tutti gli abbonamenti [GET]
-
-+ Response 200 (application/json)
-
-        [
-            {
-                "self": "/api/v1/abbonamenti/1",
-                "descrizione": "Abbonamento mensile",
-                "dataInizio": "2023-05-01",
-                "dataFine": "2023-05-31"
-            },
-            {
-                "self": "/api/v1/abbonamenti/2",
-                "descrizione": "Abbonamento annuale",
-                "dataInizio": "2023-01-01",
-                "dataFine": "2023-12-31"
-            }
-        ]
-
-+ Parameters
-    + id (required, number, `1`) - ID dell'abbonamento
-
-#### Recupera dettagli abbonamento [GET]
-
-+ Response 200 (application/json)
-
-    + Headers
-
-            Content-Type: application/json
-
-    + Body
-
-            {
-                "self": "/api/v1/abbonamenti/1",
-                "descrizione": "Abbonamento mensile",
-                "dataInizio": "2023-05-01",
-                "dataFine": "2023-05-31"
-            }
-
-## Inserimento abbonamento [POST]
-
-+ Request (application/json)
-
-    + Body
-
-            {
-                "descrizione": "Abbonamento mensile",
-                "dataInizio": "2023-05-01",
-                "dataFine": "2023-05-31",
-                "durata": "30",
-                "idPalestra": "1"
-            }
-
-+ Response 200 (application/json)
-
-    + Headers
-
-            Content-Type: application/json
-
-    + Body
-
-            {
-                "self": "/api/v1/abbonamenti/1",
-                "descrizione": "Abbonamento mensile",
-                "dataInizio": "2023-05-01",
-                "dataFine": "2023-05-31",
-                "success": true,
-                "message": "Abbonamento inserito"
-            }
-
-+ Response 409 (application/json)
-
-    + Headers
-
-            Content-Type: application/json
-
-    + Body
-
-            {
-                "success": false,
-                "message": "L'utente possiede già un abbonamento"
-            }
-            
-
-
-# Appuntamenti API
-
-L'API Appuntamenti permette di gestire gli appuntamenti nei calendari degli utenti.
-
-## Appuntamenti [/api/v1/appuntamenti]
-
-### Tutti gli appuntamenti [GET]
-
-+ Response 200 (application/json)
-
-        [
-            {
-                "self": "/api/v1/appuntamenti/1",
-                "titolo": "Appuntamento 1",
-                "descrizione": "Descrizione appuntamento 1",
-                "data": "2023-05-21"
-            },
-            {
-                "self": "/api/v1/appuntamenti/2",
-                "titolo": "Appuntamento 2",
-                "descrizione": "Descrizione appuntamento 2",
-                "data": "2023-05-22"
-            }
-        ]
-
-### Appuntamenti dell'utente [GET]
-
-+ Response 200 (application/json)
-
-    + Headers
-
-            Content-Type: application/json
-
-    + Body
-
-            [
-                {
-                    "self": "/api/v1/appuntamenti/1",
-                    "titolo": "Appuntamento 1",
-                    "descrizione": "Descrizione appuntamento 1",
-                    "data": "2023-05-21"
-                },
-                {
-                    "self": "/api/v1/appuntamenti/2",
-                    "titolo": "Appuntamento 2",
-                    "descrizione": "Descrizione appuntamento 2",
-                    "data": "2023-05-22"
-                }
-            ]
-
-### Appuntamenti del calendario [GET]
-
-+ Response 200 (application/json)
-
-    + Headers
-
-            Content-Type: application/json
-
-    + Body
-
-            [
-                {
-                    "self": "/api/v1/appuntamenti/1",
-                    "titolo": "Appuntamento 1",
-                    "descrizione": "Descrizione appuntamento 1",
-                    "data": "2023-05-21"
-                },
-                {
-                    "self": "/api/v1/appuntamenti/2",
-                    "titolo": "Appuntamento 2",
-                    "descrizione": "Descrizione appuntamento 2",
-                    "data": "2023-05-22"
-                }
-            ]
-
-### Creazione appuntamento [POST]
-
-+ Request (application/json)
-
-    + Body
-
-            {
-                "title": "Appuntamento 3",
-                "date": "2023-05-23",
-                "desc": "Descrizione appuntamento 3",
-                "involved": ["1", "2", "3"]
-            }
-
-+ Response 201
-
-    + Headers
-
-            Location: /api/v1/appuntamenti/3
-
-### Rimozione appuntamento [DELETE]
-
-+ Parameters
-    + id (required, number, `1`) - ID dell'appuntamento da rimuovere
-
-+ Response 204
-
-
-
-
-
-
-
-
-
 
 ## Autenticazione [/api/v1/autenticazione]
 
@@ -256,85 +60,6 @@ L'API Appuntamenti permette di gestire gli appuntamenti nei calendari degli uten
             }
             
             
-            
-            
-            
-            
-## Calendari [/api/v1/calendari]
-
-
-### Elenco calendari [GET]
-
-
-+ Response 200 (application/json)
-
-    + Headers
-
-            Content-Type: application/json
-
-    + Body
-
-            [
-                {
-                    "self": "/api/v1/calendari/1",
-                    "nome": "Calendario 1"
-                },
-                {
-                    "self": "/api/v1/calendari/2",
-                    "nome": "Calendario 2"
-                }
-            ]
-
-
-### Dettagli calendario [GET /{id}]
-
-
-+ Parameters
-    + id (required, number, `1`) - ID del calendario
-
-+ Response 200 (application/json)
-
-    + Headers
-
-            Content-Type: application/json
-
-    + Body
-
-            {
-                "self": "/api/v1/calendari/1",
-                "nome": "Calendario 1",
-                "appuntamenti": [ "appuntamento1", "appuntamento2" ]
-            }
-
-
-### Creazione calendario [POST]
-
-
-+ Request (application/json)
-
-    + Body
-
-            {
-                "nome": "Nuovo Calendario",
-                "idPalestra": "palestra1"
-            }
-
-+ Response 201
-
-    + Headers
-
-            Location: /api/v1/calendari/1
-
-### Rimozione calendario [DELETE /{id}]
-
-
-+ Parameters
-    + id (required, number, `1`) - ID del calendario
-
-+ Response 204
-
-
-
 ## Palestre [/api/v1/palestre]
 
 Endpoint per la gestione delle palestre.
@@ -471,7 +196,262 @@ Endpoint per la gestione delle palestre.
 
 + Response 204
 
+## Abbonamenti [/api/v1/abbonamenti]
 
+### Tutti gli abbonamenti [GET]
 
++ Response 200 (application/json)
+
+        [
+            {
+                "self": "/api/v1/abbonamenti/1",
+                "descrizione": "Abbonamento mensile",
+                "dataInizio": "2023-05-01",
+                "dataFine": "2023-05-31"
+            },
+            {
+                "self": "/api/v1/abbonamenti/2",
+                "descrizione": "Abbonamento annuale",
+                "dataInizio": "2023-01-01",
+                "dataFine": "2023-12-31"
+            }
+        ]
+
++ Parameters
+    + id (required, number, `1`) - ID dell'abbonamento
+
+#### Recupera dettagli abbonamento [GET]
+
++ Response 200 (application/json)
+
+    + Headers
+
+            Content-Type: application/json
+
+    + Body
+
+            {
+                "self": "/api/v1/abbonamenti/1",
+                "descrizione": "Abbonamento mensile",
+                "dataInizio": "2023-05-01",
+                "dataFine": "2023-05-31"
+            }
+
+## Inserimento abbonamento [POST]
+
++ Request (application/json)
+
+    + Body
+
+            {
+                "descrizione": "Abbonamento mensile",
+                "dataInizio": "2023-05-01",
+                "dataFine": "2023-05-31",
+                "durata": "30",
+                "idPalestra": "1"
+            }
+
++ Response 200 (application/json)
+
+    + Headers
+
+            Content-Type: application/json
+
+    + Body
+
+            {
+                "self": "/api/v1/abbonamenti/1",
+                "descrizione": "Abbonamento mensile",
+                "dataInizio": "2023-05-01",
+                "dataFine": "2023-05-31",
+                "success": true,
+                "message": "Abbonamento inserito"
+            }
+
++ Response 409 (application/json)
+
+    + Headers
+
+            Content-Type: application/json
+
+    + Body
+
+            {
+                "success": false,
+                "message": "L'utente possiede già un abbonamento"
+            }
             
             
+## Calendari [/api/v1/calendari]
+
+
+### Elenco calendari [GET]
+
+
++ Response 200 (application/json)
+
+    + Headers
+
+            Content-Type: application/json
+
+    + Body
+
+            [
+                {
+                    "self": "/api/v1/calendari/1",
+                    "nome": "Calendario 1"
+                },
+                {
+                    "self": "/api/v1/calendari/2",
+                    "nome": "Calendario 2"
+                }
+            ]
+
+
+### Dettagli calendario [GET /{id}]
+
+
++ Parameters
+    + id (required, number, `1`) - ID del calendario
+
++ Response 200 (application/json)
+
+    + Headers
+
+            Content-Type: application/json
+
+    + Body
+
+            {
+                "self": "/api/v1/calendari/1",
+                "nome": "Calendario 1",
+                "appuntamenti": [ "appuntamento1", "appuntamento2" ]
+            }
+
+
+### Creazione calendario [POST]
+
+
++ Request (application/json)
+
+    + Body
+
+            {
+                "nome": "Nuovo Calendario",
+                "idPalestra": "palestra1"
+            }
+
++ Response 201
+
+    + Headers
+
+            Location: /api/v1/calendari/1
+
+### Rimozione calendario [DELETE /{id}]
+
+
++ Parameters
+    + id (required, number, `1`) - ID del calendario
+
++ Response 204
+
+# Appuntamenti API
+
+L'API Appuntamenti permette di gestire gli appuntamenti nei calendari degli utenti.
+
+## Appuntamenti [/api/v1/appuntamenti]
+
+### Tutti gli appuntamenti [GET]
+
++ Response 200 (application/json)
+
+        [
+            {
+                "self": "/api/v1/appuntamenti/1",
+                "titolo": "Appuntamento 1",
+                "descrizione": "Descrizione appuntamento 1",
+                "data": "2023-05-21"
+            },
+            {
+                "self": "/api/v1/appuntamenti/2",
+                "titolo": "Appuntamento 2",
+                "descrizione": "Descrizione appuntamento 2",
+                "data": "2023-05-22"
+            }
+        ]
+
+### Appuntamenti dell'utente [GET]
+
++ Response 200 (application/json)
+
+    + Headers
+
+            Content-Type: application/json
+
+    + Body
+
+            [
+                {
+                    "self": "/api/v1/appuntamenti/1",
+                    "titolo": "Appuntamento 1",
+                    "descrizione": "Descrizione appuntamento 1",
+                    "data": "2023-05-21"
+                },
+                {
+                    "self": "/api/v1/appuntamenti/2",
+                    "titolo": "Appuntamento 2",
+                    "descrizione": "Descrizione appuntamento 2",
+                    "data": "2023-05-22"
+                }
+            ]
+
+### Appuntamenti del calendario [GET]
+
++ Response 200 (application/json)
+
+    + Headers
+
+            Content-Type: application/json
+
+    + Body
+
+            [
+                {
+                    "self": "/api/v1/appuntamenti/1",
+                    "titolo": "Appuntamento 1",
+                    "descrizione": "Descrizione appuntamento 1",
+                    "data": "2023-05-21"
+                },
+                {
+                    "self": "/api/v1/appuntamenti/2",
+                    "titolo": "Appuntamento 2",
+                    "descrizione": "Descrizione appuntamento 2",
+                    "data": "2023-05-22"
+                }
+            ]
+
+### Creazione appuntamento [POST]
+
++ Request (application/json)
+
+    + Body
+
+            {
+                "title": "Appuntamento 3",
+                "date": "2023-05-23",
+                "desc": "Descrizione appuntamento 3",
+                "involved": ["1", "2", "3"]
+            }
+
++ Response 201
+
+    + Headers
+
+            Location: /api/v1/appuntamenti/3
+
+### Rimozione appuntamento [DELETE]
+
++ Parameters
+    + id (required, number, `1`) - ID dell'appuntamento da rimuovere
+
++ Response 204
