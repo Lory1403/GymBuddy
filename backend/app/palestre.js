@@ -17,7 +17,7 @@ router.get('/:id', async (req, res) => {
     var palestra = await Palestra.findById(req.params.id);
 
     res.status(200).json({
-        self: 'api/v1/palestra/' + palestra.id,
+        self: 'api/v1/palestre/' + palestra.id,
         nome: palestra.nome,
         personale: palestra.personale,
         indirizzo: palestra.indirizzo 
@@ -52,7 +52,7 @@ router.post('', async (req,res) => {
 
     console.log('Palestra Saved Successfully');
 
-    res.location("/api/v1/palestra/" + palestra._id).status(201).send();
+    res.location("/api/v1/palestre/" + palestra._id).status(201).send();
 });
 
 router.post('/:idPalestra/aggiungiAbbonamento', async (req, res) => {
@@ -131,7 +131,10 @@ router.delete('/:id', async (req, res) => {
     let palestra = await Palestra.findById(req.params.id);
 
     if (!palestra) {
-        res.status(404).send();
+        res.status(404).json({
+            success: false,
+            message: "Palestra non trovata"
+        });
         console.log('Palestra not found');
         return;
     }

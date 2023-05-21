@@ -5,7 +5,6 @@ const Calendario = require('./models/calendario');
 const Utente = require('./models/utente');
 
 
-// NON SO SE FUNZIONA
 router.get('', (req, res) => {
     Appuntamento.find({}).then(appuntamenti => {
       res.send(appuntamenti);
@@ -13,9 +12,10 @@ router.get('', (req, res) => {
 });
 
 
-// get by userid NON SO SE FUNZIONA
+// get by userid
 router.get('/byuser', async (req, res) => {
 
+    let utente = await Utente.findById(req.body.idUtente);
     let calendario = await Calendario.findById(utente.idCalendario);
 
     let appuntamenti = await Promise.all(calendario.appuntamenti.map(async (appuntamentoID) => {
@@ -59,7 +59,7 @@ router.post('', async (req, res)=>{
     const appuntamento = new Appuntamento({
         titolo: req.body.title,
         data: req.body.date,
-        descrizione: req.body.desc,
+        descrizione: req.body.descrizione,
         involves: req.body.involved
     });
 
@@ -98,6 +98,10 @@ router.delete('/:id', async (req, res) => {
     console.log('Appintment removed successfully!');
 
     res.status(204).send();
+    res.status(204).json({
+        success: true,
+        message: "Appuntamento rimosso con successo"
+    });
 });
 
 module.exports = router;

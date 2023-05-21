@@ -81,7 +81,7 @@ router.post('', async (req,res) => {
 
     console.log('User Saved Successfully');
 
-    res.location("/utenti/" + utente._id).status(201).send();
+    res.location("/api/v1/utenti/" + utente._id).status(201).send();
 });
 
 // metodo per inserire utenti amministrativi in una palestra

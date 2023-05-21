@@ -21,7 +21,7 @@ const tokenCreator = function (user, res) {
         token: token,
         email: user.email,
         googleID: user.id,
-        self: "api/v1/" + user._id
+        self: "api/v1/utenti" + user._id
     });
 }
 

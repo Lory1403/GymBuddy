@@ -40,7 +40,10 @@ router.post('', async (req, res) => {
     var palestra = await Palestra.findById(req.body.idPalestra);
 
     if (!palestra) {
-        res.status(404).send();
+        res.status(404).json({
+            success: false,
+            message: "palestra non trovata"
+        }).send();
         console.log('Palestra non trovata');
         return;
     }
@@ -50,14 +53,17 @@ router.post('', async (req, res) => {
     
     console.log('Calendar added and saved successfully');
 
-    res.location("/api/v1/books/" + calendario._id).status(201).send();
+    res.location("/api/v1/calendari/" + calendario._id).status(201).send();
 });
 
 
 router.delete('/:id', async (req, res) => {
     let calendario = await Calendario.findById(req.params.id);
     if (!calendario) {
-        res.status(404).send();
+        res.status(404).json({
+            success: false,
+            message: "calendario non trovato"
+        }).send();
         console.log('calendar not found');
         return;
     }
@@ -65,7 +71,10 @@ router.delete('/:id', async (req, res) => {
     var palestra = await Palestra.findById(req.body.idPalestra);
 
     if (!palestra) {
-        res.status(404).send();
+        res.status(404).json({
+            success: false,
+            message: "palestra non trovata"
+        }).send();
         console.log('Palestra non trovata');
         return;
     }
@@ -75,7 +84,10 @@ router.delete('/:id', async (req, res) => {
 
     await calendario.deleteOne();
     console.log('calendar pulled and removed');
-    res.status(204).send();
+    res.status(204).json({
+        success: true,
+        message: "calendario rimosso con sucesso"
+    }).send();
 });
 
 
