@@ -33,7 +33,7 @@ Documentazioni delle Api di GymBuddy
                 "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjEyMzQ1Njc4OSIsImlhdCI6MTYyMTY1MzIwNiwiZXhwIjoxNjIxNjU2ODA2fQ.WuF1DDCn6iQYV-xBxNZHyhFENv6ZoyVgU7iDtnqRzW4"
                 "email": "email@example.com",
                 "googleID": "123456",
-                "self": "api/v1/987654"
+                "self": "api/v1/utenti/987654"
             }
 
 + Response 401 (application/json)
@@ -81,13 +81,13 @@ Endpoint per la gestione delle palestre.
 
             [
                 {
-                    "self": "/api/v1/palestra/1",
+                    "self": "/api/v1/palestre/1",
                     "nome": "Palestra 1",
                     "personale": [ "personale1", "personale2" ],
                     "indirizzo": "Via Palestra 1"
                 },
                 {
-                    "self": "/api/v1/palestra/2",
+                    "self": "/api/v1/palestre/2",
                     "nome": "Palestra 2",
                     "personale": [ "personale3", "personale4" ],
                     "indirizzo": "Via Palestra 2"
@@ -111,7 +111,7 @@ Endpoint per la gestione delle palestre.
     + Body
 
             {
-                "self": "api/v1/palestra/1",
+                "self": "api/v1/palestre/1",
                 "nome": "Palestra 1",
                 "personale": [ "personale1", "personale2" ],
                 "indirizzo": "Via Palestra 1"
@@ -139,7 +139,7 @@ Endpoint per la gestione delle palestre.
 
     + Headers
 
-            Location: /api/v1/palestra/1
+            Location: /api/v1/palestre/1
 
 
 ### Aggiungi abbonamento [POST /{idPalestra}/aggiungiAbbonamento]
@@ -170,7 +170,18 @@ Endpoint per la gestione delle palestre.
                 "message": "Abbonamento template salvato con successo",
                 "idAbbonamento": "abbonamento1"
             }
++ Response 400 (application/json)
 
+    + Headers
+
+            Content-Type: application/json
+
+    + Body
+
+            {
+                "success": false,
+                "message": "Palestra non trovata"
+            }
 
 ### Rimuovi abbonamento [POST /{idPalestra}/rimuoviAbbonamento]
 
@@ -187,9 +198,59 @@ Endpoint per la gestione delle palestre.
                 "abbonamento": "abbonamento1"
             }
 
-+ Response 204
++ Response 204 (application/json)
 
+    + Headers
 
+            Content-Type: application/json
+
+    + Body
+
+            {
+                "success": true,
+                "message": "Abbonamento template rimosso con successo",
+            }
+
++ Response 404 (application/json)
+
+    + Headers
+
+            Content-Type: application/json
+
+    + Body
+
+            {
+                "success": false,
+                "message": "Abbonamento non presente nella palestra",
+            }
+            
++ Response 404 (application/json)
+
+    + Headers
+
+            Content-Type: application/json
+
+    + Body
+
+            {
+                "success": false,
+                "message": "Abbonamento non trovato",
+            }
+            
++ Response 404 (application/json)
+
+    + Headers
+
+            Content-Type: application/json
+
+    + Body
+
+            {
+                "success": false,
+                "message": "Palestra non trovata",
+            }
+            
+            
 ### Rimozione palestra [DELETE /{id}]
 
 
@@ -197,7 +258,25 @@ Endpoint per la gestione delle palestre.
 + Parameters
     + id (required, number, `1`) - ID della palestra
 
-+ Response 204
++ Response 204 (application/json)
+
+    + Headers
+
+            Content-Type: application/json
+
+
++ Response 404 (application/json)
+
+    + Headers
+
+            Content-Type: application/json
+
+    + Body
+
+            {
+                "success": false,
+                "message": "Palestra non trovata",
+            }
 
 ## Abbonamenti [/api/v1/abbonamenti]
 
@@ -220,10 +299,11 @@ Endpoint per la gestione delle palestre.
             }
         ]
 
-+ Parameters
-    + id (required, number, `1`) - ID dell'abbonamento
 
 #### Recupera dettagli abbonamento [GET]
+
++ Parameters
+    + id (required, number, `1`) - ID dell'abbonamento
 
 + Response 200 (application/json)
 
@@ -240,6 +320,19 @@ Endpoint per la gestione delle palestre.
                 "dataFine": "2023-05-31"
             }
 
++ Response 409 (application/json)
+
+    + Headers
+
+            Content-Type: application/json
+
+    + Body
+
+            {
+                "success": false,
+                "message": "Abbonamento non trovata",
+            }
+
 ## Inserimento abbonamento [POST]
 
 + Request (application/json)
@@ -250,7 +343,6 @@ Endpoint per la gestione delle palestre.
                 "descrizione": "Abbonamento mensile",
                 "dataInizio": "2023-05-01",
                 "dataFine": "2023-05-31",
-                "durata": "30",
                 "idPalestra": "1"
             }
 
@@ -283,7 +375,32 @@ Endpoint per la gestione delle palestre.
                 "success": false,
                 "message": "L'utente possiede già un abbonamento"
             }
+
++ Response 409 (application/json)
+
+    + Headers
+
+            Content-Type: application/json
+
+    + Body
+
+            {
+                "success": false,
+                "message": "Palestra non trovata"
+            }
             
++ Response 409 (application/json)
+
+    + Headers
+
+            Content-Type: application/json
+
+    + Body
+
+            {
+                "success": false,
+                "message": "Utente non trovato"
+            }
             
 ## Calendari [/api/v1/calendari]
 
@@ -349,6 +466,19 @@ Endpoint per la gestione delle palestre.
     + Headers
 
             Location: /api/v1/calendari/1
+            
++ Response 404 (application/json)
+
+    + Headers
+
+            Content-Type: application/json
+
+    + Body
+
+            {
+                "success": false,
+                "message": "Palestra non trovato"
+            }
 
 ### Rimozione calendario [DELETE /{id}]
 
@@ -356,7 +486,49 @@ Endpoint per la gestione delle palestre.
 + Parameters
     + id (required, number, `1`) - ID del calendario
 
-+ Response 204
+            
++ Response 204 (application/json)
+
+    + Headers
+
+            Content-Type: application/json
+
+    + Body
+
+            {
+                "success": true,
+                "message": "Calendario rimosso con successo"
+               
+            }
+
++ Response 404 (application/json)
+
+    + Headers
+
+            Content-Type: application/json
+
+    + Body
+
+            {
+                "success": false,
+                "message": "Calendario non trovato"
+            }
+            
++ Response 404 (application/json)
+
+    + Headers
+
+            Content-Type: application/json
+
+    + Body
+
+            {
+                "success": false,
+                "message": "Palestra non trovata"
+            }
+
+
+
 
 # Appuntamenti API
 
@@ -383,7 +555,11 @@ L'API Appuntamenti permette di gestire gli appuntamenti nei calendari degli uten
             }
         ]
 
-### Appuntamenti dell'utente [GET]
+### Appuntamenti dell'utente [GET /byuser]
+
++ Parameters
+    + id (required, number, `1`) - ID del utente
+
 
 + Response 200 (application/json)
 
@@ -408,7 +584,9 @@ L'API Appuntamenti permette di gestire gli appuntamenti nei calendari degli uten
                 }
             ]
 
-### Appuntamenti del calendario [GET]
+### Appuntamenti del calendario [GET /bycalendar ]
++ Parameters
+    + id (required, number, `1`) - ID del calendario
 
 + Response 200 (application/json)
 
@@ -442,7 +620,7 @@ L'API Appuntamenti permette di gestire gli appuntamenti nei calendari degli uten
             {
                 "title": "Appuntamento 3",
                 "date": "2023-05-23",
-                "desc": "Descrizione appuntamento 3",
+                "descrizione": "Descrizione appuntamento 3",
                 "involved": ["1", "2", "3"]
             }
 
@@ -457,4 +635,16 @@ L'API Appuntamenti permette di gestire gli appuntamenti nei calendari degli uten
 + Parameters
     + id (required, number, `1`) - ID dell'appuntamento da rimuovere
 
-+ Response 204
++ Response 204 (application/json)
+
+    + Headers
+
+            Content-Type: application/json
+
+    + Body
+
+            {
+                "success": true,
+                "message": "Appuntamento rimosso con successo"
+               
+            }
