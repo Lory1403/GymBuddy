@@ -208,7 +208,7 @@ Endpoint per la gestione delle palestre.
 
             {
                 "success": true,
-                "message": "Abbonamento template rimosso con successo",
+                "message": "Abbonamento template rimosso con successo"
             }
 
 + Response 404 (application/json)
@@ -647,4 +647,105 @@ L'API Appuntamenti permette di gestire gli appuntamenti nei calendari degli uten
                 "success": true,
                 "message": "Appuntamento rimosso con successo"
                
+            }
+## Utenti [/api/v1/utenti]
+
+### Dettagli utente autenticato [GET /me]
+
++ Response 200 (application/json)
+
+    + Headers
+
+            Content-Type: application/json
+
+    + Body
+
+            {
+                "self": "/api/v1/utenti/1",
+                "email": "utente@example.com"
+            }
+
+
+### Creazione utente [POST]
+
++ Request (application/json)
+
+    + Body
+
+            {
+                "nome": "Nome Utente",
+                "cognome": "Cognome Utente",
+                "email": "utente@example.com",
+                "password": "password",
+                "role": "ruoloUtente"
+            }
+
+## Utenti [/api/v1/utenti]
+
+Endpoint per la gestione degli utenti.
+
+### Dettagli utente autenticato [GET /me]
+
+Restituisce i dettagli dell'utente autenticato.
+
++ Response 200 (application/json)
+
+    + Headers
+
+            Content-Type: application/json
+
+    + Body
+
+            {
+                "self": "/api/v1/utenti/1",
+                "email": "utente@example.com"
+            }
+
+
+### Creazione utente [POST]
+
+Crea un nuovo utente.
+
++ Request (application/json)
+
+    + Body
+
+            {
+                "nome": "Nome Utente",
+                "cognome": "Cognome Utente",
+                "email": "utente@example.com",
+                "password": "password",
+                "role": "ruoloUtente"
+            }
+
++ Response 201
+
+    + Headers
+
+            Location: /api/v1/utenti/1
+
++ Response 400 (application/json)
+
+    + Headers
+
+            Content-Type: application/json
+
+    + Body
+
+            {
+                "success": false,
+                "message": "Password troppo semplice"
+            }
+
++ Response 409 (application/json)
+
+    + Headers
+
+            Content-Type: application/json
+
+    + Body
+
+            {
+                "success": false,
+                "message": "L'utente esiste già"
             }
