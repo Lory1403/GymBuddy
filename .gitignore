@@ -3,6 +3,7 @@
 
 ###my files###
 .prova.js
+package-lock.json
 
 
 ### macOS ###
@@ -229,7 +230,5 @@ $RECYCLE.BIN/
 !.vscode/tasks.json
 !.vscode/launch.json
 !.vscode/extensions.json
-
-package-lock.json
 
 # End of https://www.toptal.com/developers/gitignore/api/visualstudiocode,windows,macos,node
