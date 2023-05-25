@@ -1,11 +1,11 @@
-var env = require("dotenv").config();
+//var env = require("dotenv").config();             // non usato
 const express = require("express");
 const app = express();
 //const user = require('./models/utente');
 //const passport = require('passport');
 const autenticazioni = require('./autenticazione');
-var passport = require("./google/googleAuth");
-var User = require("./models/utente");
+var passport = require("./google/googleAuth");    //non usato
+//var User = require("./models/utente");            // non usato
 var autenticazioneGoogle = require('./google/autenticazioneGoogle');
 
 const utenti = require("./utenti.js");

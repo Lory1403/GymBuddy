@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "run-dev": "nodemon index.prova.js"
+    "run-dev": "nodemon index.prova.js",
+    "test": "jest"
   },
   "author": "",
   "license": "ISC",
@@ -18,6 +19,8 @@
     "passport-google-oauth20": "^2.0.0"
   },
   "devDependencies": {
-    "nodemon": "^2.0.22"
+    "jest": "^29.5.0",
+    "nodemon": "^2.0.22",
+    "supertest": "^6.3.3"
   }
 }
