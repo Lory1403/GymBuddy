@@ -230,6 +230,6 @@ $RECYCLE.BIN/
 !.vscode/launch.json
 !.vscode/extensions.json
 
-#app/config/googleData.js
+package-lock.json
 
 # End of https://www.toptal.com/developers/gitignore/api/visualstudiocode,windows,macos,node
