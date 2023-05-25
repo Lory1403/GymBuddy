@@ -6,4 +6,5 @@ module.exports = mongoose.model('abbonamento', new Schema({
     dataInizio: Date,
     dataFine: Date, 
     idPalestra: String
+    // non manca il prezzo?
 }));

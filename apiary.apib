@@ -1,80 +1,751 @@
 FORMAT: 1A
-HOST: https://polls.apiblueprint.org/
 
-# GymBuddy
+# GymBuddy API
 
-Polls is a simple API allowing consumers to view polls and vote in them.
+Documentazioni delle Api di GymBuddy
 
-## Questions Collection [/questions]
 
-### List All Questions [GET]
+## Autenticazione [/api/v1/autenticazione]
 
-+ Response 200 (application/json)
+### Autenticazione utente [POST]
 
-        [
-            {
-                "question": "Favourite programming language?",
-                "published_at": "2015-08-05T08:40:51.620Z",
-                "choices": [
-                    {
-                        "choice": "Swift",
-                        "votes": 2048
-                    }, {
-                        "choice": "Python",
-                        "votes": 1024
-                    }, {
-                        "choice": "Objective-C",
-                        "votes": 512
-                    }, {
-                        "choice": "Ruby",
-                        "votes": 256
-                    }
-                ]
-            }
-        ]
-
-### Create a New Question [POST]
-
-You may create your own question using this action. It takes a JSON
-object containing a question and a collection of answers in the
-form of choices.
 
 + Request (application/json)
 
-        {
-            "question": "Favourite programming language?",
-            "choices": [
-                "Swift",
-                "Python",
-                "Objective-C",
-                "Ruby"
+    + Body
+
+            {
+                "id": "123456789",
+                "password": "mypassword"
+            }
+
++ Response 200 (application/json)
+
+    + Headers
+
+            Content-Type: application/json
+
+    + Body
+
+            {
+                "success": true,
+                "message": "Enjoy your token!",
+                "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjEyMzQ1Njc4OSIsImlhdCI6MTYyMTY1MzIwNiwiZXhwIjoxNjIxNjU2ODA2fQ.WuF1DDCn6iQYV-xBxNZHyhFENv6ZoyVgU7iDtnqRzW4"
+                "email": "email@example.com",
+                "googleID": "123456",
+                "self": "api/v1/utenti/987654"
+            }
+
++ Response 401 (application/json)
+
+    + Headers
+
+            Content-Type: application/json
+
+    + Body
+
+            {
+                "success": false,
+                "message": "Autenticazione fallita. Utente non trovato."
+            }
+
++ Response 401 (application/json)
+
+    + Headers
+
+            Content-Type: application/json
+
+    + Body
+
+            {
+                "success": false,
+                "message": "Autenticazione fallita. Password errata."
+            }
+            
+            
+## Palestre [/api/v1/palestre]
+
+Endpoint per la gestione delle palestre.
+
+### Elenco palestre [GET]
+
+
+
++ Response 200 (application/json)
+
+    + Headers
+
+            Content-Type: application/json
+
+    + Body
+
+            [
+                {
+                    "self": "/api/v1/palestre/1",
+                    "nome": "Palestra 1",
+                    "personale": [ "personale1", "personale2" ],
+                    "indirizzo": "Via Palestra 1"
+                },
+                {
+                    "self": "/api/v1/palestre/2",
+                    "nome": "Palestra 2",
+                    "personale": [ "personale3", "personale4" ],
+                    "indirizzo": "Via Palestra 2"
+                }
             ]
-        }
+
+
+### Dettagli palestra [GET /{id}]
+
+
+
++ Parameters
+    + id (required, number, `1`) - ID della palestra
+
++ Response 200 (application/json)
+
+    + Headers
+
+            Content-Type: application/json
+
+    + Body
+
+            {
+                "self": "api/v1/palestre/1",
+                "nome": "Palestra 1",
+                "personale": [ "personale1", "personale2" ],
+                "indirizzo": "Via Palestra 1"
+            }
+
+
+### Creazione palestra [POST]
+
+
+
++ Request (application/json)
+
+    + Body
+
+            {
+                "nome": "Nuova Palestra",
+                "indirizzo": "Via Nuova Palestra",
+                "nomeAmm": "Nome Amministratore",
+                "cognomeAmm": "Cognome Amministratore",
+                "emailAmm": "email@palestra.com",
+                "passwordAmm": "password"
+            }
+
++ Response 201
+
+    + Headers
+
+            Location: /api/v1/palestre/1
+
+
+### Aggiungi abbonamento [POST /{idPalestra}/aggiungiAbbonamento]
+
+
+
++ Parameters
+    + idPalestra (required, number, `1`) - ID della palestra
+
++ Request (application/json)
+
+    + Body
+
+            {
+                "descrizione": "Abbonamento mensile"
+            }
 
 + Response 201 (application/json)
 
     + Headers
 
-            Location: /questions/2
+            Content-Type: application/json
 
     + Body
 
             {
-                "question": "Favourite programming language?",
-                "published_at": "2015-08-05T08:40:51.620Z",
-                "choices": [
-                    {
-                        "choice": "Swift",
-                        "votes": 0
-                    }, {
-                        "choice": "Python",
-                        "votes": 0
-                    }, {
-                        "choice": "Objective-C",
-                        "votes": 0
-                    }, {
-                        "choice": "Ruby",
-                        "votes": 0
-                    }
-                ]
+                "success": true,
+                "message": "Abbonamento template salvato con successo",
+                "idAbbonamento": "abbonamento1"
+            }
++ Response 400 (application/json)
+
+    + Headers
+
+            Content-Type: application/json
+
+    + Body
+
+            {
+                "success": false,
+                "message": "Palestra non trovata"
+            }
+
+### Rimuovi abbonamento [POST /{idPalestra}/rimuoviAbbonamento]
+
+
+
++ Parameters
+    + idPalestra (required, number, `1`) - ID della palestra
+
++ Request (application/json)
+
+    + Body
+
+            {
+                "abbonamento": "abbonamento1"
+            }
+
++ Response 204 (application/json)
+
+    + Headers
+
+            Content-Type: application/json
+
+    + Body
+
+            {
+                "success": true,
+                "message": "Abbonamento template rimosso con successo"
+            }
+
++ Response 404 (application/json)
+
+    + Headers
+
+            Content-Type: application/json
+
+    + Body
+
+            {
+                "success": false,
+                "message": "Abbonamento non presente nella palestra"
+            }
+            
++ Response 404 (application/json)
+
+    + Headers
+
+            Content-Type: application/json
+
+    + Body
+
+            {
+                "success": false,
+                "message": "Abbonamento non trovato"
+            }
+            
++ Response 404 (application/json)
+
+    + Headers
+
+            Content-Type: application/json
+
+    + Body
+
+            {
+                "success": false,
+                "message": "Palestra non trovata"
+            }
+            
+            
+### Rimozione palestra [DELETE /{id}]
+
+
+
++ Parameters
+    + id (required, number, `1`) - ID della palestra
+
++ Response 204 (application/json)
+
+    + Headers
+
+            Content-Type: application/json
+
+
++ Response 404 (application/json)
+
+    + Headers
+
+            Content-Type: application/json
+
+    + Body
+
+            {
+                "success": false,
+                "message": "Palestra non trovata"
+            }
+
+## Abbonamenti [/api/v1/abbonamenti]
+
+### Tutti gli abbonamenti [GET]
+
++ Response 200 (application/json)
+
+        [
+            {
+                "self": "/api/v1/abbonamenti/1",
+                "descrizione": "Abbonamento mensile",
+                "dataInizio": "2023-05-01",
+                "dataFine": "2023-05-31"
+            },
+            {
+                "self": "/api/v1/abbonamenti/2",
+                "descrizione": "Abbonamento annuale",
+                "dataInizio": "2023-01-01",
+                "dataFine": "2023-12-31"
+            }
+        ]
+
+
+#### Recupera dettagli abbonamento [GET]
+
++ Parameters
+    + id (required, number, `1`) - ID dell'abbonamento
+
++ Response 200 (application/json)
+
+    + Headers
+
+            Content-Type: application/json
+
+    + Body
+
+            {
+                "self": "/api/v1/abbonamenti/1",
+                "descrizione": "Abbonamento mensile",
+                "dataInizio": "2023-05-01",
+                "dataFine": "2023-05-31"
+            }
+
++ Response 409 (application/json)
+
+    + Headers
+
+            Content-Type: application/json
+
+    + Body
+
+            {
+                "success": false,
+                "message": "Abbonamento non trovata"
+            }
+
+## Inserimento abbonamento [POST]
+
++ Request (application/json)
+
+    + Body
+
+            {
+                "descrizione": "Abbonamento mensile",
+                "dataInizio": "2023-05-01",
+                "dataFine": "2023-05-31",
+                "idPalestra": "1"
+            }
+
++ Response 200 (application/json)
+
+    + Headers
+
+            Content-Type: application/json
+
+    + Body
+
+            {
+                "self": "/api/v1/abbonamenti/1",
+                "descrizione": "Abbonamento mensile",
+                "dataInizio": "2023-05-01",
+                "dataFine": "2023-05-31",
+                "success": true,
+                "message": "Abbonamento inserito"
+            }
+
++ Response 409 (application/json)
+
+    + Headers
+
+            Content-Type: application/json
+
+    + Body
+
+            {
+                "success": false,
+                "message": "L'utente possiede già un abbonamento"
+            }
+
++ Response 409 (application/json)
+
+    + Headers
+
+            Content-Type: application/json
+
+    + Body
+
+            {
+                "success": false,
+                "message": "Palestra non trovata"
+            }
+            
++ Response 409 (application/json)
+
+    + Headers
+
+            Content-Type: application/json
+
+    + Body
+
+            {
+                "success": false,
+                "message": "Utente non trovato"
+            }
+            
+## Calendari [/api/v1/calendari]
+
+
+### Elenco calendari [GET]
+
+
++ Response 200 (application/json)
+
+    + Headers
+
+            Content-Type: application/json
+
+    + Body
+
+            [
+                {
+                    "self": "/api/v1/calendari/1",
+                    "nome": "Calendario 1"
+                },
+                {
+                    "self": "/api/v1/calendari/2",
+                    "nome": "Calendario 2"
+                }
+            ]
+
+
+### Dettagli calendario [GET /{id}]
+
+
++ Parameters
+    + id (required, number, `1`) - ID del calendario
+
++ Response 200 (application/json)
+
+    + Headers
+
+            Content-Type: application/json
+
+    + Body
+
+            {
+                "self": "/api/v1/calendari/1",
+                "nome": "Calendario 1",
+                "appuntamenti": [ "appuntamento1", "appuntamento2" ]
+            }
+
+
+### Creazione calendario [POST]
+
+
++ Request (application/json)
+
+    + Body
+
+            {
+                "nome": "Nuovo Calendario",
+                "idPalestra": "palestra1"
+            }
+
++ Response 201
+
+    + Headers
+
+            Location: /api/v1/calendari/1
+            
++ Response 404 (application/json)
+
+    + Headers
+
+            Content-Type: application/json
+
+    + Body
+
+            {
+                "success": false,
+                "message": "Palestra non trovato"
+            }
+
+### Rimozione calendario [DELETE /{id}]
+
+
++ Parameters
+    + id (required, number, `1`) - ID del calendario
+
+            
++ Response 204 (application/json)
+
+    + Headers
+
+            Content-Type: application/json
+
+    + Body
+
+            {
+                "success": true,
+                "message": "Calendario rimosso con successo"
+               
+            }
+
++ Response 404 (application/json)
+
+    + Headers
+
+            Content-Type: application/json
+
+    + Body
+
+            {
+                "success": false,
+                "message": "Calendario non trovato"
+            }
+            
++ Response 404 (application/json)
+
+    + Headers
+
+            Content-Type: application/json
+
+    + Body
+
+            {
+                "success": false,
+                "message": "Palestra non trovata"
+            }
+
+
+
+
+# Appuntamenti API
+
+L'API Appuntamenti permette di gestire gli appuntamenti nei calendari degli utenti.
+
+## Appuntamenti [/api/v1/appuntamenti]
+
+### Tutti gli appuntamenti [GET]
+
++ Response 200 (application/json)
+
+        [
+            {
+                "self": "/api/v1/appuntamenti/1",
+                "titolo": "Appuntamento 1",
+                "descrizione": "Descrizione appuntamento 1",
+                "data": "2023-05-21"
+            },
+            {
+                "self": "/api/v1/appuntamenti/2",
+                "titolo": "Appuntamento 2",
+                "descrizione": "Descrizione appuntamento 2",
+                "data": "2023-05-22"
+            }
+        ]
+
+### Appuntamenti dell'utente [GET /byuser]
+
++ Parameters
+    + id (required, number, `1`) - ID del utente
+
+
++ Response 200 (application/json)
+
+    + Headers
+
+            Content-Type: application/json
+
+    + Body
+
+            [
+                {
+                    "self": "/api/v1/appuntamenti/1",
+                    "titolo": "Appuntamento 1",
+                    "descrizione": "Descrizione appuntamento 1",
+                    "data": "2023-05-21"
+                },
+                {
+                    "self": "/api/v1/appuntamenti/2",
+                    "titolo": "Appuntamento 2",
+                    "descrizione": "Descrizione appuntamento 2",
+                    "data": "2023-05-22"
+                }
+            ]
+
+### Appuntamenti del calendario [GET /bycalendar ]
++ Parameters
+    + id (required, number, `1`) - ID del calendario
+
++ Response 200 (application/json)
+
+    + Headers
+
+            Content-Type: application/json
+
+    + Body
+
+            [
+                {
+                    "self": "/api/v1/appuntamenti/1",
+                    "titolo": "Appuntamento 1",
+                    "descrizione": "Descrizione appuntamento 1",
+                    "data": "2023-05-21"
+                },
+                {
+                    "self": "/api/v1/appuntamenti/2",
+                    "titolo": "Appuntamento 2",
+                    "descrizione": "Descrizione appuntamento 2",
+                    "data": "2023-05-22"
+                }
+            ]
+
+### Creazione appuntamento [POST]
+
++ Request (application/json)
+
+    + Body
+
+            {
+                "title": "Appuntamento 3",
+                "date": "2023-05-23",
+                "descrizione": "Descrizione appuntamento 3",
+                "involved": ["1", "2", "3"]
+            }
+
++ Response 201
+
+    + Headers
+
+            Location: /api/v1/appuntamenti/3
+
+### Rimozione appuntamento [DELETE]
+
++ Parameters
+    + id (required, number, `1`) - ID dell'appuntamento da rimuovere
+
++ Response 204 (application/json)
+
+    + Headers
+
+            Content-Type: application/json
+
+    + Body
+
+            {
+                "success": true,
+                "message": "Appuntamento rimosso con successo"
+               
+            }
+## Utenti [/api/v1/utenti]
+
+### Dettagli utente autenticato [GET /me]
+
++ Response 200 (application/json)
+
+    + Headers
+
+            Content-Type: application/json
+
+    + Body
+
+            {
+                "self": "/api/v1/utenti/1",
+                "email": "utente@example.com"
+            }
+
+
+### Creazione utente [POST]
+
++ Request (application/json)
+
+    + Body
+
+            {
+                "nome": "Nome Utente",
+                "cognome": "Cognome Utente",
+                "email": "utente@example.com",
+                "password": "password",
+                "role": "ruoloUtente"
+            }
+
+## Utenti [/api/v1/utenti]
+
+Endpoint per la gestione degli utenti.
+
+### Dettagli utente autenticato [GET /me]
+
+Restituisce i dettagli dell'utente autenticato.
+
++ Response 200 (application/json)
+
+    + Headers
+
+            Content-Type: application/json
+
+    + Body
+
+            {
+                "self": "/api/v1/utenti/1",
+                "email": "utente@example.com"
+            }
+
+
+### Creazione utente [POST]
+
+Crea un nuovo utente.
+
++ Request (application/json)
+
+    + Body
+
+            {
+                "nome": "Nome Utente",
+                "cognome": "Cognome Utente",
+                "email": "utente@example.com",
+                "password": "password",
+                "role": "ruoloUtente"
+            }
+
++ Response 201
+
+    + Headers
+
+            Location: /api/v1/utenti/1
+
++ Response 400 (application/json)
+
+    + Headers
+
+            Content-Type: application/json
+
+    + Body
+
+            {
+                "success": false,
+                "message": "Password troppo semplice"
+            }
+
++ Response 409 (application/json)
+
+    + Headers
+
+            Content-Type: application/json
+
+    + Body
+
+            {
+                "success": false,
+                "message": "L'utente esiste già"
             }

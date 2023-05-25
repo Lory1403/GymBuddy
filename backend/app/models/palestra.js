@@ -8,6 +8,7 @@ module.exports = mongoose.model('palestra', new Schema({
         via: String,
         numeroCivico: String,
         citta: String,
+        provincia: String,
         paese: String,
         cap: Number
     },

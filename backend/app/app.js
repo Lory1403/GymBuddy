@@ -11,7 +11,7 @@ var autenticazioneGoogle = require('./google/autenticazioneGoogle');
 const utenti = require("./utenti.js");
 const tokenChecker = require('./tokenChecker');
 const abbonamenti = require('./abbonamenti');
-//const palestre = require('./palestre');
+const palestre = require('./palestre');
 const calendari = require('./calendari');
 
 app.use(express.json());
@@ -26,16 +26,16 @@ app.use((req, res, next) => {
 
 
 // api nostre protette
-app.use('/api/v1/palestre', tokenChecker);
+//app.use('/api/v1/palestre', tokenChecker);
 app.use('/api/v1/abbonamento', tokenChecker);
 app.use('/api/v1/calendario', tokenChecker);
-app.use('/api/v1/utenti', tokenChecker);
+//app.use('/api/v1/utenti', tokenChecker);
 
 //api nostre che usiamo
 app.use('/api/v1/autenticazioni', autenticazioni);
 app.use('/api/v1/utenti', utenti);
 app.use('/auth', autenticazioneGoogle);
-//app.use('/api/v1/palestre', palestre);
+app.use('/api/v1/palestre', palestre);
 app.use('/api/v1/abbonamenti', abbonamenti);
 app.use('/api/v1/calendario', calendari); // dentro a calendario usiamo la api di appuntamento
 
