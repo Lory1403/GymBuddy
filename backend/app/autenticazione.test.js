@@ -8,13 +8,18 @@ describe('POST /api/v1/autenticazioni', () => {
     let userFindOne;
 
     beforeAll( async () => {
-        userFindOne = jest.spyOn(User, 'findOne').mockImplementation( (obj) => {
-            return Promise.resolve(new User({
-                nome: "Test",
-                cognome: "Test",
-                email: "test@test.com",
-                password: "Test"
-            }));
+        userFindOne = jest.spyOn(User, 'findOne').mockImplementation( async (req) => {
+            if (req.email == "test@test.com") {
+                return new User({
+                    nome: "Test",
+                    cognome: "Test",
+                    email: "test@test.com",
+                    password: "Test"
+                });
+            } else {
+                return undefined;
+            }
+            
         });
     });
 
@@ -23,7 +28,7 @@ describe('POST /api/v1/autenticazioni', () => {
     });
 
 
-    test('POST /api/v1/autenticazioni, dovrebbe restituire il token firmato', async () => {
+    it('Dovrebbe restituire il token', async () => {
         const response = await request(app)
             .post('/api/v1/autenticazioni')
             .send({
@@ -33,31 +38,12 @@ describe('POST /api/v1/autenticazioni', () => {
             .expect(200);
         expect(response.body.token).toBeDefined();
     });
-});
 
-// utente non trovato
-describe('POST /api/v1/autenticazioni', () => {
-
-    const User = require('./models/utente');
-    
-    let userFindOne;
-
-    beforeAll( async () => {
-        userFindOne = jest.spyOn(User, 'findOne').mockImplementation( (obj) => {
-            return null;
-        });
-    });
-
-    afterAll(async () => {
-        userFindOne.mockRestore();
-    });
-
-
-    test('POST /api/v1/autenticazioni, dovrebbe restituire utente non trovato', async () => {
-        const response = await request(app)
+    it('Dovrebbe restituire utente non trovato', async () => {
+        await request(app)
             .post('/api/v1/autenticazioni')
             .send({
-                email: 'test@test.com',
+                email: 'email_errata',
                 password: 'Test'
             })
             .expect({
@@ -66,34 +52,9 @@ describe('POST /api/v1/autenticazioni', () => {
             })
             .expect(401);
     });
-});
 
-
-// password sbagliata
-describe('POST /api/v1/autenticazioni', () => {
-
-    const User = require('./models/utente');
-    
-    let userFindOne;
-
-    beforeAll( async () => {
-        userFindOne = jest.spyOn(User, 'findOne').mockImplementation( (obj) => {
-            return Promise.resolve(new User({
-                nome: "Test",
-                cognome: "Test",
-                email: "test@test.com",
-                password: "Test"
-            }));
-        });
-    });
-
-    afterAll(async () => {
-        userFindOne.mockRestore();
-    });
-
-
-    test('POST /api/v1/autenticazioni, dovrebbe restituire utente non trovato', async () => {
-        const response = await request(app)
+    it('Dovrebbe restituire password errata', async () => {
+        await request(app)
             .post('/api/v1/autenticazioni')
             .send({
                 email: 'test@test.com',
@@ -106,4 +67,76 @@ describe('POST /api/v1/autenticazioni', () => {
             .expect(401);
     });
 });
+
+// // utente non trovato
+// describe('POST /api/v1/autenticazioni', () => {
+
+//     const User = require('./models/utente');
+    
+//     let userFindOne;
+
+//     beforeAll( async () => {
+//         userFindOne = jest.spyOn(User, 'findOne').mockImplementation( (obj) => {
+//             return null;
+//         });
+//     });
+
+//     afterAll(async () => {
+//         userFindOne.mockRestore();
+//     });
+
+
+//     test('POST /api/v1/autenticazioni, dovrebbe restituire utente non trovato', async () => {
+//         const response = await request(app)
+//             .post('/api/v1/autenticazioni')
+//             .send({
+//                 email: 'test@test.com',
+//                 password: 'Test'
+//             })
+//             .expect({
+//                 success: false,
+//                 message: "Authentication failed. User not found."
+//             })
+//             .expect(401);
+//     });
+// });
+
+
+// // password sbagliata
+// describe('POST /api/v1/autenticazioni', () => {
+
+//     const User = require('./models/utente');
+    
+//     let userFindOne;
+
+//     beforeAll( async () => {
+//         userFindOne = jest.spyOn(User, 'findOne').mockImplementation( (obj) => {
+//             return Promise.resolve(new User({
+//                 nome: "Test",
+//                 cognome: "Test",
+//                 email: "test@test.com",
+//                 password: "Test"
+//             }));
+//         });
+//     });
+
+//     afterAll(async () => {
+//         userFindOne.mockRestore();
+//     });
+
+
+//     test('POST /api/v1/autenticazioni, dovrebbe restituire utente non trovato', async () => {
+//         const response = await request(app)
+//             .post('/api/v1/autenticazioni')
+//             .send({
+//                 email: 'test@test.com',
+//                 password: 'PasswordErrata'
+//             })
+//             .expect({
+//                 success: false,
+//                 message: "Authentication failed. Wrong password."
+//             })
+//             .expect(401);
+//     });
+// });
 
