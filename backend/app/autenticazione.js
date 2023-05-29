@@ -2,8 +2,6 @@ const express = require("express");
 const router = express.Router();
 const utente = require("./models/utente"); // get our mongoose model
 const tokenCreator = require("./tokenCreator.js");
-//var user;
-//const jwt = require("jsonwebtoken"); // used to create, sign, and verify tokens
 
 // ---------------------------------------------------------
 // route to authenticate and get a new token
@@ -12,7 +10,7 @@ const tokenCreator = require("./tokenCreator.js");
 router.post("", async function (req, res) {
   // find the user
   var user = await utente.findOne({
-    googleId: req.body.id,
+    email: req.body.email,
   });
 
   // user not found
