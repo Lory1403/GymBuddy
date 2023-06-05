@@ -53,6 +53,7 @@ router.post('', async (req, res)=>{
             idPalestra: req.body.idPalestra
         }).save();
 
+        utente.idPalestra = req.body.idPalestra;
 
         utente.abbonamento = abbonamento._id;
         
