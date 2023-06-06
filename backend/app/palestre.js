@@ -97,7 +97,7 @@ router.post('/:idPalestra/rimuoviAbbonamento', async (req, res) => {
     
     var abbonamento = await Abbonamento.findById(req.body.abbonamento);
 
-    if(!palestra) {
+    if(palestra) {
         if (!abbonamento) {
             if (palestra.abbonamentiDisponibili.includes(abbonamento._id)) {
                 palestra.abbonamentiDisponibili.pull(abbonamento._id);
