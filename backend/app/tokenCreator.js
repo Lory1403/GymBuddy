@@ -31,7 +31,7 @@ const tokenCreator = function (user, res, reg) {
             message: "Enjoy your token!",
             token: token,
             email: user.email,
-            googleID: user.id,
+            id: user._id,
             self: "api/v1/utenti" + user._id
         });
     }

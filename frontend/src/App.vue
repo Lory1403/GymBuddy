@@ -1,5 +1,6 @@
 <script setup>
 import { RouterLink, RouterView } from 'vue-router'
+import Login from '@/components/LoginForm.vue'
 
 import { ref, onMounted } from 'vue'
 
