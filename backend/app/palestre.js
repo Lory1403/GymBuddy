@@ -28,31 +28,35 @@ router.get('/:id', async (req, res) => {
 // post per creare un utente
 router.post('', async (req,res) => {
 
-    var palestra = new Palestra ({
+    var palestra = await new Palestra ({
         nome: req.body.nome,
         indirizzo: req.body.indirizzo,
         //calendariCorsi: req.body.calendariCorsi,
         //abbonamentiDisponibili: req.body.abbonamentiDisponibili
-    });
+    }).save();
 
     // bisogna creare un utente amministrativo che gestisce la palestra
-    var utente = new Utente ({
+    var utente = await new Utente ({
         nome: req.body.nomeAmm,
         cognome: req.body.cognomeAmm,
         email: req.body.emailAmm,
         password: req.body.passwordAmm, // solo se utente registrato tramite form
         role: "amm", // {reg, abb, amm, sala}
         idPalestra: palestra._id
-    });
+    }).save();
 
     palestra.personale.push(utente._id);
 
-    utente.save();
     palestra.save();
 
-    console.log('Palestra Saved Successfully');
-
-    res.location("/api/v1/palestre/" + palestra._id).status(201);
+    res.status(201).json({
+        success: true,
+        message: "Palestra e amministratore creati",
+        self: 'api/v1/palestre/' + palestra.id,
+        nome: palestra.nome,
+        personale: palestra.personale,
+        indirizzo: palestra.indirizzo 
+    });
 });
 
 router.post('/:idPalestra/aggiungiAbbonamento', async (req, res) => {
