@@ -30,7 +30,7 @@ app.use((req, res, next) => {
 // api nostre protette
 //app.use('/api/v1/palestre', tokenChecker);
 app.use('/api/v1/abbonamento', tokenChecker);
-app.use('/api/v1/calendario', tokenChecker);
+app.use('/api/v1/calendari', tokenChecker);
 app.use('/api/v1/appuntamenti', tokenChecker);
 
 //app.use('/api/v1/utenti', tokenChecker);
@@ -42,7 +42,7 @@ app.use('/api/v1/utenti', utenti);
 app.use('/auth', autenticazioneGoogle);
 app.use('/api/v1/palestre', palestre);
 app.use('/api/v1/abbonamenti', abbonamenti);
-app.use('/api/v1/calendario', calendari); // dentro a calendario usiamo la api di appuntamento
+app.use('/api/v1/calendari', calendari); // dentro a calendario usiamo la api di appuntamento
 app.use('/api/v1/appuntamenti', appuntamenti);
 
 

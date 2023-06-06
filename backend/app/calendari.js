@@ -6,10 +6,10 @@ const Palestra = require('./models/palestra');
 
 // get tutti i calendari
 router.get('', async (req, res) => {
-    
+
     let calendari = await Calendario.find({});
 
-    calendari = calendari.map( (calendario) => {
+    calendari = calendari.map((calendario) => {
         return {
             self: '/api/v1/calendari/' + calendario.id,
             nome: calendario.nome
@@ -20,9 +20,9 @@ router.get('', async (req, res) => {
 });
 
 // get calendari per id calendario
-router.get('/:id', async (req, res) => {
+router.get('/byid', async (req, res) => {
 
-    let calendario = await Calendario.findById(req.params.id);
+    let calendario = await Calendario.findById(req.body.id);
 
     res.status(200).json({
         self: 'api/v1/calendari/' + calendario.id,
@@ -33,7 +33,7 @@ router.get('/:id', async (req, res) => {
 
 router.post('', async (req, res) => {
 
-	let calendario = await new Calendario({
+    let calendario = await new Calendario({
         nome: req.body.nome
     }).save();
 
@@ -50,15 +50,15 @@ router.post('', async (req, res) => {
 
     palestra.calendariCorsi.push(calendario._id);
     palestra.save();
-    
+
     console.log('Calendar added and saved successfully');
 
-    res.location("/api/v1/calendari/" + calendario._id).status(201).send();
+    res.status(201).json({ self: "/api/v1/calendari/" + calendario._id }).send();
 });
 
 
-router.delete('/:id', async (req, res) => {
-    let calendario = await Calendario.findById(req.params.id);
+router.delete('', async (req, res) => {
+    let calendario = await Calendario.findById(req.body.id);
     if (!calendario) {
         res.status(404).json({
             success: false,
@@ -67,8 +67,8 @@ router.delete('/:id', async (req, res) => {
         console.log('calendar not found');
         return;
     }
-
-    var palestra = await Palestra.findById(req.body.idPalestra);
+    console.log(calendario)
+    let palestra = await Palestra.findById(req.body.idPalestra);
 
     if (!palestra) {
         res.status(404).json({
@@ -84,10 +84,10 @@ router.delete('/:id', async (req, res) => {
 
     await calendario.deleteOne();
     console.log('calendar pulled and removed');
-    res.status(204).json({
+    res.status(200).json({
         success: true,
         message: "calendario rimosso con sucesso"
-    }).send();
+    });
 });
 
 
