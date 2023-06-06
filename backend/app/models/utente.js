@@ -12,7 +12,7 @@ module.exports = mongoose.model('utente', new Schema({
     password: String, // solo se utente registrato tramite form
     idCalendario: String,
     //chat: [String],
-    role: String, // {reg, abb, amm, sala}
+    ruolo: String, // {reg, abb, amm, sala}
     idAbbonamento: String,
     // se è un abbonato le schede e le valutazioni sono le sue personali
     // se è un Personale di sala le scede e le valutazioni sono quelle che ha inserito
