@@ -5,14 +5,6 @@ const Calendario = require('./models/calendario');
 
 router.get('/me', async (req,res) => {
 
-    if(!req.body.loggedUser) {
-        res.status(428).json({
-            success: false,
-            message: "L'utente non è autenticato"
-        });
-        return;
-    }
-
     let utente = await Utente.findOne({email: req.body.loggedUser.email});
 
     res.status(200).json({
@@ -56,7 +48,5 @@ router.post('', async (req,res) => {
         self: '/api/v1/utenti/' + utente._id
     });
 });
-
-// metodo per inserire utenti amministrativi in una palestra
 
 module.exports = router;

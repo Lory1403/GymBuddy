@@ -7,8 +7,26 @@ const User = require('./models/utente');
 describe("GET /api/v1/utenti/me", () => {
 
     let userFindOne;
+    let token;
+    let tokenErrato;
 
     beforeAll( async () => {
+
+        jest.setTimeout(8000);
+        app.locals.db = await mongoose.connect(process.env.DB_URL);
+
+        var payload = {
+            email: "test@test.com",
+            id: "1234"
+        };
+
+        var options = {
+            expiresIn: 86400 // expires in 24 hours
+        };
+
+        token = jwt.sign(payload, process.env.SUPER_SECRET, options);
+        tokenErrato = jwt.sign(payload, "password sbagliata", options);
+
         userFindOne = jest.spyOn(User, 'findOne').mockImplementation( async (loggedUser) => {
             if (loggedUser.email == "test@test.com") {
                 return new User({
@@ -28,13 +46,26 @@ describe("GET /api/v1/utenti/me", () => {
         userFindOne.mockRestore();
     });
 
-    it('Dovrebbe restituire utente non autenticato', async () => {
+    it('Dovrebbe restituire token non fornito', async () => {
         await request(app)
             .get('/api/v1/utenti/me')
-            .expect(428)
+            .expect(401)
             .expect({
                 success: false,
-                message: "L'utente non è autenticato"
+                message: "No token provided."
+            });
+    });
+
+    it('Dovrebbe restituire token errato', async () => {
+        await request(app)
+            .get('/api/v1/utenti/me')
+            .send({
+                token: tokenErrato
+            })
+            .expect(403)
+            .expect({
+                success: false,
+                message: "Failed to authenticate token."
             });
     });
 
@@ -42,6 +73,7 @@ describe("GET /api/v1/utenti/me", () => {
         await request(app)
             .get('/api/v1/utenti/me')
             .send({
+                token: token,
                 loggedUser: {
                     email: "test@test.com"
                 }
@@ -58,10 +90,22 @@ describe("GET /api/v1/utenti/me", () => {
 describe("POST /api/v1/utenti", () => {
     
     let userFindOne;
+    let token;
 
     beforeAll( async () => {
         jest.setTimeout(8000);
         app.locals.db = await mongoose.connect(process.env.DB_URL);
+
+        var payload = {
+            email: "test@test.com",
+            id: "1234"
+        };
+
+        var options = {
+            expiresIn: 86400 // expires in 24 hours
+        };
+
+        token = jwt.sign(payload, process.env.SUPER_SECRET, options);
 
         userFindOne = jest.spyOn(User, 'findOne').mockImplementation( async (req) => {
             if (req.email == "presente@test.com") {
@@ -87,6 +131,7 @@ describe("POST /api/v1/utenti", () => {
         await request(app)
             .post('/api/v1/utenti')
             .send({
+                token: token,
                 email: "presente@test.com"
             })
             .expect(409)
@@ -104,7 +149,8 @@ describe("POST /api/v1/utenti", () => {
                 cognome: "Test",
                 email: "test@test.com",
                 password: "Password",
-                ruolo: "reg"
+                ruolo: "reg",
+                token: token
             })
             .expect(201)
             .expect( (res) => {
@@ -115,18 +161,3 @@ describe("POST /api/v1/utenti", () => {
         
     });
 });
-
-// inserire utenti amministrativi in una palestra
-// describe("", () => {
-//     beforeAll( async () => {
-
-//     });
-
-//     afterAll( async () => {
-
-//     });
-
-//     it('', async () => {
-
-//     });
-// });

@@ -4,11 +4,6 @@ var passport = require("passport");
 var User = require("../models/utente");
 var Calendario = require("../models/calendario");
 var GoogleStrategy = require("passport-google-oauth20").Strategy; //https://www.passportjs.org/reference/
-//var User = mongoose.model('User', utente); //require('../models/user');
-
-//var app = express();
-
-//router.post("", async function (req, res) {});
 
 passport.use(
   new GoogleStrategy(
