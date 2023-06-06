@@ -5,7 +5,7 @@ const jwt = require("jsonwebtoken"); // used to create, sign, and verify tokens
 const tokenCreator = function (user, res, reg) {
     var payload = {
         email: user.email,
-        googleID: user.id
+        id: user._id
         // other data encrypted in the token
     };
 
@@ -21,8 +21,8 @@ const tokenCreator = function (user, res, reg) {
             message: "Utente creato. Enjoy your token!",
             token: token,
             email: user.email,
-            googleID: user.id,
-            self: "api/v1/utenti" + user._id
+            id: user._id,
+            self: "api/v1/utenti/" + user._id
         });
     } else {
         res.status(200);
@@ -32,7 +32,7 @@ const tokenCreator = function (user, res, reg) {
             token: token,
             email: user.email,
             id: user._id,
-            self: "api/v1/utenti" + user._id
+            self: "api/v1/utenti/" + user._id
         });
     }
 }

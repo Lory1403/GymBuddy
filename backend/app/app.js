@@ -4,6 +4,7 @@ const app = express();
 //const user = require('./models/utente');
 //const passport = require('passport');
 const autenticazioni = require('./autenticazione');
+const registrazioni = require('./registrazione');
 var passport = require("./google/googleAuth");    //non usato
 //var User = require("./models/utente");            // non usato
 var autenticazioneGoogle = require('./google/autenticazioneGoogle');
@@ -36,6 +37,7 @@ app.use('/api/v1/appuntamenti', tokenChecker);
 
 //api nostre che usiamo
 app.use('/api/v1/autenticazioni', autenticazioni);
+app.use('/api/v1/registrazioni', registrazioni)
 app.use('/api/v1/utenti', utenti);
 app.use('/auth', autenticazioneGoogle);
 app.use('/api/v1/palestre', palestre);
