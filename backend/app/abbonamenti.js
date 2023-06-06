@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const Abbonamento = require('./models/abbonamento');
 const Utente = require('./models/utente');
+const Palestra = require('./models/palestra');
 var currentDate = new Date();
 
 //Tutti gli abbonamenti
@@ -35,7 +36,7 @@ router.get('/:id', async (req, res) => {
 //Inserimento abbonamento
 router.post('', async (req, res)=>{
 
-    let utente = Utente.findById(req.body.id);
+    var utente = await Utente.findById(req.body.id);
 
     if(!utente){
         res.status(409).json({
@@ -45,7 +46,19 @@ router.post('', async (req, res)=>{
           return;
     }
 
-    if(!utente.abbonamento || currentDate <= dataInizio || currentDate >= dataFine){
+    let palestra = await Palestra.findById(req.body.idPalestra);
+
+    if (!palestra){
+        res.status(409).json({
+            success: false,
+            message: "Palestra non trovata"
+        });
+        return;
+    }
+
+    let abbonamentoUtente = await Abbonamento.findById(utente.abbonamento);
+
+    if(!abbonamentoUtente || currentDate >= abbonamentoUtente.dataFine){
         const abbonamento = await new Abbonamento({
             descrizione: req.body.descrizione,
             dataInizio: req.body.dataInizio,
@@ -71,14 +84,6 @@ router.post('', async (req, res)=>{
         message: "L'utente possiede già un abbonamento"
         });
     };
-
-    if (!idPalestra){
-        res.status(409).json({
-            success: false,
-            message: "Palestra non trovata"
-        });
-        return;
-    }
 
 });
 module.exports = router;

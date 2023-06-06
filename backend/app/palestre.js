@@ -52,7 +52,7 @@ router.post('', async (req,res) => {
 
     console.log('Palestra Saved Successfully');
 
-    res.location("/api/v1/palestre/" + palestra._id).status(201).send();
+    res.location("/api/v1/palestre/" + palestra._id).status(201);
 });
 
 router.post('/:idPalestra/aggiungiAbbonamento', async (req, res) => {
@@ -101,7 +101,7 @@ router.post('/:idPalestra/rimuoviAbbonamento', async (req, res) => {
                 abbonamento.deleteOne();
 
                 res.status(204).json({
-                    success: true,
+                     success: true,
                     message: "Abbonamento template rimosso con successo"
                 });
                 return;
