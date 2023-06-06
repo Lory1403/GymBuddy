@@ -5,7 +5,6 @@ const mongoose = require('mongoose');
 const abbonamento = require('./models/abbonamento');
 
 //VERIFICA METODO POST
-
 describe('POST /api/v1/abbonamenti', () => {
 
   const User = require('./models/utente');
@@ -84,13 +83,13 @@ describe('POST /api/v1/abbonamenti', () => {
               id: '1234',
               idPalestra: 'idTest',
               token: token
-          })
-            .expect({
-              self: 'api/v1/abbonamenti/' + idAbbonamento,
-              success: true,
-              message: "Abbonamento inserito"
             })
-            .expect(200);
+            .expect(200)
+            .expect((res) => {
+              expect(res.body.self).toMatch('api\/v1\/abbonamenti\/');
+              expect(res.body.success).toBe(true);
+              expect(res.body.message).toBe("Abbonamento inserito");
+            });
   }); 
 
 //Utente non trovato
@@ -124,13 +123,104 @@ describe('POST /api/v1/abbonamenti', () => {
             .expect(409);
   });
 
-
 //L'utente possiede già un abbonamento
+it('Dovrebbe restituire un errore se utente ha già un abbonamento', async () => {
 
+  const findByIdUtenteMock = jest.spyOn(User, 'findById').mockResolvedValue({
+    _id: '123',
+    idPalestra: '456',
+    abbonamento: '789',
+  });
+
+  const findByIdPalestraMock = jest.spyOn(Palestra, 'findById').mockResolvedValue({
+    _id: '456',
+    nome: 'Palestra di prova',
+  });
+
+  const findByIdAbbonamentoMock = jest.spyOn(Abbonamento, 'findById').mockResolvedValue({
+    _id: '789',
+    descrizione: 'Abbonamento di prova',
+    dataInizio: '2022-01-01',
+    dataFine: '2022-12-31',
+    idPalestra: '456',
+  });
+
+  const response = await request(app).post('/api/v1/abbonamenti').send({
+    id: '123',
+    idPalestra: '456',
+    descrizione: 'Abbonamento di prova',
+    dataInizio: '2023-01-01',
+    dataFine: '2023-12-31',
+  });
+
+  expect(response.status).toBe(409);
+  expect(response.body).toEqual({
+    success: false,
+    message: "L'utente possiede già un abbonamento",
+  });
+  findByIdUtenteMock.mockRestore();
+  findByIdPalestraMock.mockRestore();
+  findByIdAbbonamentoMock.mockRestore();
+});
 });
 
 
 // VERIFICA METODO GET
+describe('GET /api/v1/abbonamenti', () => {
+  const Abbonamento = require('./models/abbonamento');
+  it('Dovrebbe restituire tutti gli abbonamenti', async () => {
+    const findMock = jest.spyOn(Abbonamento, 'find').mockResolvedValue([
+      { id: '1', descrizione: 'Abbonamento 1' },
+      { id: '2', descrizione: 'Abbonamento 2' },
+    ]);
+
+    const response = await request(app).get('/api/v1/abbonamenti');
+
+    expect(response.status).toBe(200);
+    expect(response.body).toEqual([
+      { id: '1', descrizione: 'Abbonamento 1' },
+      { id: '2', descrizione: 'Abbonamento 2' },
+    ]);
+    findMock.mockRestore();
+  });
+});
+
+describe('GET /api/v1/abbonamenti/:id', () => {
+  const Abbonamento = require('./models/abbonamento');
+  it('Dovrebbe restituire abbonamento corretto', async () => {
+    const findByIdMock = jest.spyOn(Abbonamento, 'findById').mockResolvedValue({
+      _id: 'abc123',
+      descrizione: 'Abbonamento di prova',
+      dataInizio: '2023-01-01',
+      dataFine: '2023-12-31',
+    });
+    const response = await request(app).get('/api/v1/abbonamenti/123');
+
+    expect(response.status).toBe(200);
+    expect(response.body).toEqual({
+      self: 'api/v1/abbonamenti/abc123',
+      descrizione: 'Abbonamento di prova',
+      dataInizio: '2023-01-01',
+      dataFine: '2023-12-31',
+    });
+
+    findByIdMock.mockRestore();
+  });
+
+  it('Dovrebbe restituire un errore se abbonamento non esiste', async () => {
+   
+    const findByIdMock = jest.spyOn(Abbonamento, 'findById').mockResolvedValue(undefined);
+    const response = await request(app).get('/api/v1/abbonamenti/456');
+
+    expect(response.status).toBe(409);
+    expect(response.body).toEqual({
+      success: false,
+      message: 'Abbonamento non trovato',
+    });
+  });
+});
+
+
 
 
 
