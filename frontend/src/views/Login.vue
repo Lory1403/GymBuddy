@@ -24,7 +24,7 @@
     </div>
     <div>
       <label>Sei un nuovo utente? </label>
-      <a class="text-decoration-none color" href=""> Registrati</a>
+      <RouterLink class="nav-link" to="/registration">Registrati</RouterLink>
     </div>
   </form>
 </template>
