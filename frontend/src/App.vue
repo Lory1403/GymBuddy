@@ -26,6 +26,9 @@ import { ref, onMounted } from 'vue'
           <li class="nav-item">
             <RouterLink class="nav-link" to="/login">Login</RouterLink>
           </li>
+          <li class="nav-item">
+            <RouterLink class="nav-link" to="/registration">Registration</RouterLink>
+          </li>
           <!-- <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button"
               data-bs-toggle="dropdown" aria-expanded="false">
