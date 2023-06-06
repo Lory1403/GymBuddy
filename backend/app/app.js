@@ -28,15 +28,10 @@ app.use((req, res, next) => {
 
 // api nostre protette
 //app.use('/api/v1/palestre', tokenChecker);
-<<<<<<< HEAD
 app.use('/api/v1/abbonamento', tokenChecker);
 app.use('/api/v1/calendario', tokenChecker);
 app.use('/api/v1/appuntamenti', tokenChecker);
 
-=======
-app.use('/api/v1/abbonamenti', tokenChecker);
-app.use('/api/v1/calendari', tokenChecker);
->>>>>>> 25e5e07 (Abbonamenti test)
 //app.use('/api/v1/utenti', tokenChecker);
 
 //api nostre che usiamo
