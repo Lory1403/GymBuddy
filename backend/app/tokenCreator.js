@@ -7,8 +7,8 @@ const tokenCreator = function (user, res, reg) {
         email: user.email,
         googleID: user.id
         // other data encrypted in the token
-      };
-    
+    };
+
     var options = {
         expiresIn: 86400 // expires in 24 hours
     };

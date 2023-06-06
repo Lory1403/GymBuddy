@@ -7,6 +7,7 @@ const autenticazioni = require('./autenticazione');
 var passport = require("./google/googleAuth");    //non usato
 //var User = require("./models/utente");            // non usato
 var autenticazioneGoogle = require('./google/autenticazioneGoogle');
+var appuntamenti = require('./appuntamenti');
 
 const utenti = require("./utenti.js");
 const tokenChecker = require('./tokenChecker');
@@ -29,6 +30,8 @@ app.use((req, res, next) => {
 //app.use('/api/v1/palestre', tokenChecker);
 app.use('/api/v1/abbonamento', tokenChecker);
 app.use('/api/v1/calendario', tokenChecker);
+app.use('/api/v1/appuntamenti', tokenChecker);
+
 //app.use('/api/v1/utenti', tokenChecker);
 
 //api nostre che usiamo
@@ -38,6 +41,8 @@ app.use('/auth', autenticazioneGoogle);
 app.use('/api/v1/palestre', palestre);
 app.use('/api/v1/abbonamenti', abbonamenti);
 app.use('/api/v1/calendario', calendari); // dentro a calendario usiamo la api di appuntamento
+app.use('/api/v1/appuntamenti', appuntamenti);
+
 
 
 app.get("/api/v1/hello", (req, res) => {
