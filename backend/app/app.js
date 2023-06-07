@@ -32,8 +32,7 @@ app.use((req, res, next) => {
 app.use('/api/v1/abbonamento', tokenChecker);
 app.use('/api/v1/calendari', tokenChecker);
 app.use('/api/v1/appuntamenti', tokenChecker);
-
-//app.use('/api/v1/utenti', tokenChecker);
+app.use('/api/v1/utenti', tokenChecker);
 
 //api nostre che usiamo
 app.use('/api/v1/autenticazioni', autenticazioni);
