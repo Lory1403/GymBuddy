@@ -190,6 +190,59 @@ describe('POST /api/v1/palestre', () => {
 
     });
 
+//54545454444444444444444444444444444444444444444444
+it('Dovrebbe rimuovere correttamente l\'abbonamento', async () => {
+    
+    // Simula un abbonamento esistente
+    const fakeAbbonamento = {
+        dewscrizione: 'desscrizione'
+      };
+    
+    // Simula una palestra esistente
+    const fakePalestra = {
+      
+      abbonamentiDisponibili: [fakeAbbonamento._id]
+    };
+   
+    jest.spyOn(palestra, 'findById').mockResolvedValue(fakePalestra);
+    jest.spyOn(Abbonamento, 'findById').mockResolvedValue(fakeAbbonamento);
+
+    const response = await request(app)
+      .post('/api/v1/palestre/fakePalestraId/rimuoviAbbonamento')
+      .send({ abbonamento: fakeAbbonamento._id })
+      .expect(404);
+
+    // Verifica la risposta
+    expect(response.body).toEqual({
+        success: false,
+        message: 'Abbonamento non trovato'
+      });
+      fakePalestra._id = 'fakePalestraId';
+
+      const saveMock = jest.fn();
+      fakePalestra.save = saveMock;
+      
+      // Assert che il metodo save() sia stato chiamato
+     
+    // Verifica che i metodi siano stati chiamati correttamente
+    expect(palestra.findById).toHaveBeenCalledWith('fakePalestraId');
+    expect(Abbonamento.findById).toHaveBeenCalledWith(fakeAbbonamento._id);
+    expect(fakePalestra.abbonamentiDisponibili).toContain(fakeAbbonamento._id);
+
+    expect(saveMock).toHaveBeenCalled();
+    expect(fakeAbbonamento.deleteOne).toHaveBeenCalled();
+
+    // Ripristina i metodi originali
+    Palestra.findById.mockRestore();
+    Abbonamento.findById.mockRestore();
+  });
+
+
+
+
+
+
+
 
 
 });
