@@ -13,8 +13,10 @@
     "dotenv": "^16.0.3",
     "express": "^4.18.2",
     "express-session": "^1.17.3",
+    "geolocation-utils": "^1.2.5",
     "jsonwebtoken": "^9.0.0",
     "mongoose": "^7.1.0",
+    "node-geocoder": "^4.2.0",
     "passport": "^0.6.0",
     "passport-google-oauth20": "^2.0.0"
   },
