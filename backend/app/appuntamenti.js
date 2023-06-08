@@ -140,7 +140,7 @@ router.post('/corso', async (req, res) => {
 
         let utente = await Utente.findOne({ email: req.loggedUser.email });
 
-        if (utente.role != 'amm') {
+        if (utente.ruolo != 'amm') {
             res.status(401);
             res.json({
                 success: false,

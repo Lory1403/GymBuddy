@@ -45,7 +45,7 @@ describe('/api/v1/appuntamenti', () => {
             email: 'email.test1@prova.it',
             password: 'password1',
             idCalendario: calendario1._id,
-            role: 'abb',
+            ruolo: 'abb',
         }).save();
         appuntamento1.involves.push(user1._id);
         appuntamento1.save();
@@ -61,7 +61,7 @@ describe('/api/v1/appuntamenti', () => {
             email: 'email.test2@prova.it',
             password: 'password2',
             idCalendario: calendario2._id,
-            role: 'abb',
+            ruolo: 'abb',
         }).save();
 
         calendario3 = await new Calendario({
@@ -73,7 +73,7 @@ describe('/api/v1/appuntamenti', () => {
             email: 'email.test3@prova.it',
             password: 'password3',
             idCalendario: calendario3._id,
-            role: 'abb',
+            ruolo: 'abb',
         }).save();
 
         calendarioCorso = await new Calendario({
@@ -94,7 +94,7 @@ describe('/api/v1/appuntamenti', () => {
             email: 'email.testAmm@prova.it',
             password: 'passwordAmm',
             idCalendario: calendarioAmm._id,
-            role: 'amm',
+            ruolo: 'amm',
             idPalestra: palestra._id
         }).save();
 
