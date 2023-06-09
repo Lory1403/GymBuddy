@@ -22,7 +22,7 @@ import { ref, onMounted } from 'vue'
       <div class="collapse navbar-collapse" id="navbarNavDropdown">
         <ul class="navbar-nav">
           <li class="nav-item">
-            <RouterLink class="nav-link" to="/paginaApertura">Home</RouterLink>
+            <RouterLink class="nav-link" to="/home">Home</RouterLink>
           </li>
           <li class="nav-item">
             <RouterLink class="nav-link" to="/login">Login</RouterLink>
@@ -37,7 +37,7 @@ import { ref, onMounted } from 'vue'
   <!-- End Header -->
 
 
-  <div class="align-center">
+  <div class="align-top">
     <RouterView />
   </div>
 </template>
