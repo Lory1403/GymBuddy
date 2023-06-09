@@ -92,7 +92,7 @@ router.post('', async (req, res) => {
 
 router.delete('', async (req, res) => {
 
-    if (!req.body.id) {
+    if (!req.body.idCalendario) {
         res.status(400).json({
             success: false,
             message: "idCalendario non inserito"
@@ -100,7 +100,7 @@ router.delete('', async (req, res) => {
         return;
     }
 
-    let calendario = await Calendario.findById(req.body.id);
+    let calendario = await Calendario.findById(req.body.idCalendario);
 
     if (!calendario) {
         res.status(404).json({

@@ -83,6 +83,51 @@ describe('/api/v1/calendari', () => {
             }).expect(200);
     });
 
+    test('GET /api/v1/calendari/byid id non inserito', async () => {
+        var res = await request(app)
+            .get('/api/v1/calendari/byid')
+            .set('Accept', 'application/json')
+            .send({
+                'token': token,
+            }).expect(400);
+        expect(res.body.message).toBe('id non inserito')
+    });
+
+    test('GET /api/v1/calendari/byid calendario non trovato', async () => {
+        let calendarioNonSalvato = new Calendario();
+        var res = await request(app)
+            .get('/api/v1/calendari/byid')
+            .set('Accept', 'application/json')
+            .send({
+                'token': token,
+                'id': calendarioNonSalvato
+            }).expect(404);
+        expect(res.body.message).toBe('calendario non trovato')
+    });
+
+    test('POST /api/v1/calendari nome non inserito', async () => {
+
+        var res = await request(app)
+            .post('/api/v1/calendari/')
+            .set('Accept', 'application/json')
+            .send({
+                'token': token,
+                'idPalestra': palestra._id
+            }).expect(400);
+        expect(res.body.message).toMatch('nome non inserito');
+    });
+
+    test('POST /api/v1/calendari idPalestra non inserito', async () => {
+
+        var res = await request(app)
+            .post('/api/v1/calendari/')
+            .set('Accept', 'application/json')
+            .send({
+                'token': token,
+                'nome': 'corso2'
+            }).expect(400);
+        expect(res.body.message).toMatch('idPalestra non inserito');
+    });
 
     test('POST /api/v1/calendari palestra non trovata', async () => {
         let palestraNonSalvata = new Palestra()
@@ -110,6 +155,28 @@ describe('/api/v1/calendari', () => {
         expect(res.body.self).toMatch('api\/v1\/calendari\/');
     });
 
+    test('DELETE /api/v1/calendari idCalendario non inserito', async () => {
+        var res = await request(app)
+            .delete('/api/v1/calendari/')
+            .set('Accept', 'application/json')
+            .send({
+                'token': token,
+                'idPalestra': palestra._id
+            }).expect(400);
+        expect(res.body.message).toBe('idCalendario non inserito');
+    });
+
+    test('DELETE /api/v1/calendari idPalestra non inserito', async () => {
+        var res = await request(app)
+            .delete('/api/v1/calendari/')
+            .set('Accept', 'application/json')
+            .send({
+                'token': token,
+                'idCalendario': calendarioCorso._id,
+            }).expect(400);
+        expect(res.body.message).toBe('idPalestra non inserito');
+    });
+
     test('DELETE /api/v1/calendari calendario non trovato', async () => {
         let calendarioNonSalvato = new Calendario();
 
@@ -118,7 +185,7 @@ describe('/api/v1/calendari', () => {
             .set('Accept', 'application/json')
             .send({
                 'token': token,
-                'id': calendarioNonSalvato._id,
+                'idCalendario': calendarioNonSalvato._id,
                 'idPalestra': palestra._id
             }).expect(404);
         expect(res.body.message).toBe('calendario non trovato');
@@ -132,7 +199,7 @@ describe('/api/v1/calendari', () => {
             .set('Accept', 'application/json')
             .send({
                 'token': token,
-                'id': calendarioCorso._id,
+                'idCalendario': calendarioCorso._id,
                 'idPalestra': palestraNonSalvata._id
             }).expect(404);
         expect(res.body.message).toBe('palestra non trovata');
@@ -144,7 +211,7 @@ describe('/api/v1/calendari', () => {
             .set('Accept', 'application/json')
             .send({
                 'token': token,
-                'id': calendarioCorso._id,
+                'idCalendario': calendarioCorso._id,
                 'idPalestra': palestra._id
             }).expect(200);
         expect(res.body.message).toBe('calendario rimosso con sucesso');
