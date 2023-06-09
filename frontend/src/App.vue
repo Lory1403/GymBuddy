@@ -10,7 +10,7 @@ import { ref, onMounted } from 'vue'
   <nav class="navbar navbar-expand-lg navbar-dark bg-dark position-absolute top-0 start-0 w-100">
     <div class="container-fluid">
       <div class="navbar-brand" href="#">
-        <img src="@/assets/palestra.jpg" alt="logo-palestra" width="100"
+        <img src="@/assets/logo.png" alt="logo-palestra" width="100"
           class="d-inline-block align-text-top">
         GymBuddy
       </div>
