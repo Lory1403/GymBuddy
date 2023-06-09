@@ -22,7 +22,24 @@ router.get('', async (req, res) => {
 // get calendari per id calendario
 router.get('/byid', async (req, res) => {
 
+    if (!req.body.id) {
+        res.status(400).json({
+            success: false,
+            message: "id non inserito"
+        }).send();
+        return;
+    }
+
     let calendario = await Calendario.findById(req.body.id);
+
+    if (!calendario) {
+        res.status(404).json({
+            success: false,
+            message: "calendario non trovato"
+        }).send();
+        console.log('calendar not found');
+        return;
+    }
 
     res.status(200).json({
         self: 'api/v1/calendari/' + calendario.id,
@@ -33,9 +50,25 @@ router.get('/byid', async (req, res) => {
 
 router.post('', async (req, res) => {
 
+    if (!req.body.nome) {
+        res.status(400).json({
+            success: false,
+            message: "nome non inserito"
+        }).send();
+        return;
+    }
+
     let calendario = await new Calendario({
         nome: req.body.nome
     }).save();
+
+    if (!req.body.idPalestra) {
+        res.status(400).json({
+            success: false,
+            message: "idPalestra non inserito"
+        }).send();
+        return;
+    }
 
     var palestra = await Palestra.findById(req.body.idPalestra);
 
@@ -58,7 +91,17 @@ router.post('', async (req, res) => {
 
 
 router.delete('', async (req, res) => {
-    let calendario = await Calendario.findById(req.body.id);
+
+    if (!req.body.idCalendario) {
+        res.status(400).json({
+            success: false,
+            message: "idCalendario non inserito"
+        }).send();
+        return;
+    }
+
+    let calendario = await Calendario.findById(req.body.idCalendario);
+
     if (!calendario) {
         res.status(404).json({
             success: false,
@@ -67,7 +110,15 @@ router.delete('', async (req, res) => {
         console.log('calendar not found');
         return;
     }
-    console.log(calendario)
+
+    if (!req.body.idPalestra) {
+        res.status(400).json({
+            success: false,
+            message: "idPalestra non inserito"
+        }).send();
+        return;
+    }
+
     let palestra = await Palestra.findById(req.body.idPalestra);
 
     if (!palestra) {

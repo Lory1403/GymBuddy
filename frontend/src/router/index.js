@@ -8,6 +8,7 @@ const router = createRouter({
       name: 'paginaApertura',
       component: () => import('../views/paginaApertura.vue')
     },
+
     {
       path: '/login',
       name: 'login',

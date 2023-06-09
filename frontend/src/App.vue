@@ -1,6 +1,5 @@
 <script setup>
 import { RouterLink, RouterView } from 'vue-router'
-import Login from '@/components/LoginForm.vue'
 
 import { ref, onMounted } from 'vue'
 
@@ -15,6 +14,7 @@ import { ref, onMounted } from 'vue'
           class="d-inline-block align-text-top">
         GymBuddy
       </div>
+
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown"
         aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
@@ -35,6 +35,7 @@ import { ref, onMounted } from 'vue'
     </div>
   </nav>
   <!-- End Header -->
+
 
   <div class="align-center">
     <RouterView />
