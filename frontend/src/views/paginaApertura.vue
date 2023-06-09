@@ -4,11 +4,11 @@
       <div class="container">
         <div class="left-section">
           <h2>Sei un nuovo utente?</h2>
-          <button class="button" @click="navigateToRegistration">Registrati</button>
+          <a href="/registration" class="btn btn-secondary btn-lg active" role="button" aria-pressed="true" @click="handleClick">Registrati</a>
         </div>
         <div class="right-section">
           <h2>Sei già registrato?</h2>
-          <button class="button" @click="navigateToLogin">Accedi</button>
+          <a href="/login" class="btn btn-secondary btn-lg active" role="button" aria-pressed="true" @click="handleClick">Login</a>
         </div>
       </div>
     </div>

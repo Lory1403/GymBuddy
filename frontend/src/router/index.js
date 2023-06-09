@@ -28,6 +28,11 @@ const router = createRouter({
       component: () => import('../views/Palestra.vue')
     },
     {
+      path: '/dashboard',
+      name: 'dashboard',
+      component: () => import('../views/Dashboard.vue')
+    },
+    {
       path: '/home',
       name: 'home',
       component: () => import('../views/Home.vue')

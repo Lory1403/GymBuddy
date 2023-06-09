@@ -1,7 +1,7 @@
 <template>
     <div class="page">
-      <h1>Ecco le palestre vicino a te!</h1>
-      <ul class="gym-list d-flex align-self-center flex-wrap justify-content-around">
+      <h2>Ecco le palestre vicino a te!</h2>
+      <ul class="gym-list d-flex align-self-center flex-wrap justify-content-around" >
         <li v-for="palestra in palestre" :key="palestra.id" style="margin-right: 50px!important;" class="d-flex align-items-center justify-content-center flex-column">
           <h3 class="mb-2">{{ palestra.nome }}</h3>
           <p class="mb-1">{{ palestra.indirizzo }}</p>
@@ -19,16 +19,12 @@
     data(){
         return{
             palestre:[
-                {id:1, nome:'palestra1 sdhdsbidbuibuiudiuhdiubuibebeiouwwebouebouwbouedboufewboufweboufweibobiouebi', indirizzo: 'via paese ( ciao ashsahgasbhdsvhedubifbuifewubiefue )', distanza: 0},
-                {id:2, nome:'palestra2', indirizzo: 'via paese ( )', distanza: 0},
-                {id:3, nome:'palestra3', indirizzo: 'via paese ( )', distanza: 0},
-                {id:4, nome:'palestra4', indirizzo: 'via paese ( )', distanza: 0},
-                {id:5, nome:'palestra5', indirizzo: 'via paese ( )', distanza: 0},
-                {id:1, nome:'palestra1', indirizzo: 'via paese ( )', distanza: 0},
-                {id:2, nome:'palestra2', indirizzo: 'via paese ( )', distanza: 0},
-                {id:3, nome:'palestra3', indirizzo: 'via paese ( )', distanza: 0},
-                {id:4, nome:'palestra4', indirizzo: 'via paese ( )', distanza: 0},
-                {id:5, nome:'palestra5', indirizzo: 'via paese ( )', distanza: 0},
+              //Prende info da backend
+                {id:1, nome:'palestra1', indirizzo: 'via paese (provincia)', distanza: 0},
+                {id:2, nome:'palestra2', indirizzo: 'via paese (provincia )', distanza: 0},
+                {id:3, nome:'palestra3', indirizzo: 'via paese (provincia)', distanza: 0},
+                {id:4, nome:'palestra4', indirizzo: 'via paese (provincia )', distanza: 0},
+              
             ],
        };
     },
@@ -67,7 +63,6 @@ h1 {
 }
 
 .gym-list li {
-  border: 1px solid #ccc;
   padding: 10px;
   margin-bottom: 10px;
 }
