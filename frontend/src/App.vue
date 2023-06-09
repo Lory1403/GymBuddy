@@ -1,19 +1,28 @@
 <script setup>
 import { RouterLink, RouterView } from 'vue-router'
-import Login from '@/components/LoginForm.vue'
 
 import { ref, onMounted } from 'vue'
 
 </script>
 
 <template>
-  <nav class="navbar navbar-expand-lg navbar-dark bg-dark position-absolute top-0 start-0 w-100">
+  <main class="w-50 text-light position-absolute top-0 start-0">
+    <div class="container-block">
+      <img src="@/assets/palestra.jpg" width="100">
+      <span class="fs-1">GymBuddy</span>
+    </div>
+  </main>
+
+
+
+
+
+
+
+
+
+
     <div class="container-fluid">
-      <div class="navbar-brand" href="#">
-        <img src="@/assets/palestra.jpg" alt="" width="100"
-          class="d-inline-block align-text-top">
-        GymBuddy
-      </div>
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown"
         aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
@@ -43,7 +52,6 @@ import { ref, onMounted } from 'vue'
         </ul>
       </div>
     </div>
-  </nav>
 
   <div class="w-50 align-center">
     <RouterView />
