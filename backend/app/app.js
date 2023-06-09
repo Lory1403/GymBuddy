@@ -28,7 +28,7 @@ app.use((req, res, next) => {
 
 
 // api nostre protette
-//app.use('/api/v1/palestre', tokenChecker);
+app.use('/api/v1/palestre', tokenChecker);
 app.use('/api/v1/abbonamento', tokenChecker);
 app.use('/api/v1/calendari', tokenChecker);
 app.use('/api/v1/appuntamenti', tokenChecker);

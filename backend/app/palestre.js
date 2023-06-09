@@ -63,11 +63,19 @@ router.get('/:id', async (req, res) => {
 
     var palestra = await Palestra.findById(req.params.id);
 
-    res.status(200).json({
-        self: 'api/v1/palestre/' + palestra.id,
-        nome: palestra.nome,
-        personale: palestra.personale,
-        indirizzo: palestra.indirizzo 
+    if (palestra) {
+        res.status(200).json({
+            self: 'api/v1/palestre/' + palestra._id,
+            nome: palestra.nome,
+            personale: palestra.personale,
+            indirizzo: palestra.indirizzo 
+        });
+        return;
+    }
+
+    res.status(400).json({
+        success: false,
+        message: "Palestra non trovata"
     });
 });
 
@@ -109,7 +117,6 @@ router.post('', async (req,res) => {
 router.post('/:idPalestra/aggiungiAbbonamento', async (req, res) => {
     
     var palestra = await Palestra.findById(req.params.idPalestra);
-    console.log(palestra);
 
     if(palestra) {
         // aggiungi abbonamento template
@@ -141,39 +148,39 @@ router.post('/:idPalestra/aggiungiAbbonamento', async (req, res) => {
 router.post('/:idPalestra/rimuoviAbbonamento', async (req, res) => {
     
     var palestra = await Palestra.findById(req.params.idPalestra);
-    
-    var abbonamento = await Abbonamento.findById(req.body.abbonamento);
 
     if(palestra) {
-        if (!abbonamento) {
+
+        var abbonamento = await Abbonamento.findById(req.body.abbonamento);
+
+        if (abbonamento) {
             if (palestra.abbonamentiDisponibili.includes(abbonamento._id)) {
                 palestra.abbonamentiDisponibili.pull(abbonamento._id);
                 palestra.save();
                 abbonamento.deleteOne();
 
-                res.status(204).json({
-                     success: true,
+                res.status(200).json({
+                    success: true,
                     message: "Abbonamento template rimosso con successo"
                 });
                 return;
             }
-            res.status(404).json({
+            res.status(400).json({
                 success: false,
                 message: "Abbonamento non presente nella palestra"
             });
             return;
         }
-        res.status(404).json({
+        res.status(400).json({
             success: false,
             message: "Abbonamento non trovato"
         });
         return;
     }
-    res.status(404).json({
+    res.status(400).json({
         success: false,
         message: "Palestra non trovata"
     });
-    return;
 });
 
 // delete by id
@@ -182,11 +189,10 @@ router.delete('/:id', async (req, res) => {
     let palestra = await Palestra.findById(req.params.id);
 
     if (!palestra) {
-        res.status(404).json({
+        res.status(400).json({
             success: false,
             message: "Palestra non trovata"
         });
-        console.log('Palestra not found');
         return;
     }
 
@@ -195,8 +201,10 @@ router.delete('/:id', async (req, res) => {
     });
 
     palestra.deleteOne();
-    console.log('Palestra removed sucessfully');
-    res.status(204).send();
+    res.status(200).json({
+        success: true,
+        message: "Palestra rimossa con successo"
+    });
 });
 
 module.exports = router;

@@ -2,28 +2,114 @@ const request = require('supertest');
 const app = require('./app');
 const mongoose = require('mongoose');
 const jwt = require('jsonwebtoken');
-const palestra = require('./models/palestra');
+const Palestra = require('./models/palestra');
 const Abbonamento = require('./models/abbonamento');
-describe('POST /api/v1/palestre', () => {
+const abbonamento = require('./models/abbonamento');
 
-    let token;
+var payload = {
+    email: "test@test.com",
+    id: "0000"
+}
+var options = {
+    expiresIn: 86400
+}
+var token = jwt.sign(payload, process.env.SUPER_SECRET, options);
 
-    beforeAll(async () => {
-        jest.setTimeout(8000);
-        app.locals.db = await mongoose.connect(process.env.DB_URL);
+// describe('GET /api/v1/palestre', () => {
+//     beforeAll( async () => {
 
-        var payload = {
-            email: "test@test.com",
-            googleID: "0000"
-        }
-        var options = {
-            expiresIn: 86400
-        }
-        token = jwt.sign(payload, process.env.SUPER_SECRET, options);
+//     });
+
+//     afterAll( async () => {
+
+//     });
+
+//     it('', async () => {
+
+//     });
+// });
+
+beforeAll( async () => {
+    jest.setTimeout(8000);
+    app.locals.db = await mongoose.connect(process.env.DB_URL);
+});
+
+afterAll( async () => {
+    await mongoose.connection.close(true);
+});
+
+describe('GET /api/v1/palestre/:id', () => {
+    
+    var palestraFindById;
+    var palestra;
+    
+    beforeAll( async () => {
+        palestra = await new Palestra ({
+                nome: "Test",
+                personale: [],
+                indirizzo: {
+                  via: 'Via Sommarive',
+                  numeroCivico: '9',
+                  citta: 'Trento'
+                },
+                calendariCorsi: [],
+                abbonamentiDisponibili: []
+              }).save();
+
+        palestraFindById = jest.spyOn(Palestra, 'findById').mockImplementation( async (id) => {
+            if(id == 'idErrato'){
+                return undefined;
+            } else {
+                return palestra;
+            }
+        });
     });
 
-    afterAll(async () => {
-        mongoose.connection.close(true);
+    afterAll( async () => {
+        palestraFindById.mockRestore();
+        await palestra.deleteOne();
+    });
+
+    it('Dovrebbe restituire la palestra cercata', async () => {
+        await request(app)
+                .get('/api/v1/palestre/' + palestra._id)
+                .send({
+                    token: token
+                })
+                .expect(200)
+                .expect({
+                    self: 'api/v1/palestre/' + palestra._id,
+                    nome: palestra.nome,
+                    personale: JSON.parse(JSON.stringify(palestra.personale)),
+                    indirizzo: JSON.parse(JSON.stringify(palestra.indirizzo))
+                });
+    });
+
+    it('Dovrebbe restituire palestra non trovata', async () => {
+        await request(app)
+                .get('/api/v1/palestre/' + 'idErrato')
+                .send({
+                    token: token
+                })
+                .expect(400)
+                .expect({
+                    success: false,
+                    message: "Palestra non trovata"
+                });
+    });
+});
+
+
+describe('POST /api/v1/palestre', () => {
+    
+    var self;
+    
+    beforeAll( async () => {
+    });
+
+    afterAll( async () => {
+        self = self.slice(16);
+        await Palestra.findByIdAndRemove(self);
     });
 
     it('Dovrebbe restituire palestra creata', async () => {
@@ -42,6 +128,7 @@ describe('POST /api/v1/palestre', () => {
             })
             .expect(201)
             .expect((res) => {
+                self = res.body.self;
                 expect(res.body.success).toBe(true);
                 expect(res.body.message).toBe("Palestra e amministratore creati");
                 expect(res.body.self).toMatch('api\/v1\/palestre\/');
@@ -51,284 +138,250 @@ describe('POST /api/v1/palestre', () => {
             });
 
     });
-
-    it('Dovrebbe restituire palestra non trovata ', async () => {
-        const fakeDescrizione = 'Abbonamento Test';
-        const fakePalestra = new palestra({
-            nome: 'test',
-            indirizzo: {
-                via: 'via'
-            },
-            abbonamentiDisponibili: []
-        });
-
-        palestra.findById = async (id) => null;
-
-        const response = await request(app)
-            .post(`/api/v1/palestre/${fakePalestra._id}/aggiungiAbbonamento`)
-            .send({ descrizione: fakeDescrizione });
-
-        const expectedResponse = {
-            success: false,
-            message: 'Palestra non trovata'
-        };
-    });
-
-    it('Dovrebbe aggiungere un nuovo abbonamento', async () => {
-        const fakeDescrizione = 'Abbonamento Test';
-
-        const fakePalestra = new palestra({
-            nome: 'test',
-            indirizzo: {
-                via: 'via'
-            },
-            abbonamentiDisponibili: []
-        });
-
-        palestra.findById = async (id) => fakePalestra;
-
-        Abbonamento.save = async function () {
-            this._id = 'fakeAbbonamentoId';
-            return this;
-        };
-
-        const response = await request(app)
-            .post(`/api/v1/palestre/${fakePalestra._id}/aggiungiAbbonamento`)
-            .send({ descrizione: fakeDescrizione });
-
-    });
-
-    
-    it('dovrebbe gestire il caso in cui l\'abbonamento non esiste', async () => {
-        
-        const abbonamento1 = new Abbonamento({
-            desxrizione: ' abbonamento 1'
-        });
-        const abbonamento2 = new Abbonamento({
-            desxrizione: ' abbonamento 1'
-        });
-        const abbonamento3 = new Abbonamento({
-            desxrizione: ' abbonamento 1'
-        });
-
-        const fakePalestra = new palestra({
-            nome: 'test',
-            indirizzo: {
-                via: 'via'
-            },
-            abbonamentiDisponibili: [abbonamento1, abbonamento2, abbonamento3]
-        });
-        const fakeAbbonamento = new Abbonamento({
-            descrizione: 'descrizione abbonamento'
-
-        });
-
-        palestra.findById = async (id) => {
-            if (id === fakePalestra._id) {
-                return {
-                    _id: fakePalestra._id,
-                    abbonamentiDisponibili: [],
-                    save: async () => { } 
-                };
-            }
-            return null;
-        };
-
-        Abbonamento.findById = async (id) => {
-            if (id === fakeAbbonamento._id) {
-                return null;
-            }
-            return null;
-        };
-
-        const response = await request(app)
-            .post(`/api/v1/palestre/${fakePalestra._id}/rimuoviAbbonamento`)
-            .send({ abbonamento: fakeAbbonamento._id });
-
-        const expectedResponse = {
-            success: false,
-            message: 'Abbonamento non trovato'
-        };
-
-    });
-    it('Dovrebbe togliere l\'abbonamento dalla palestra e restituire il successo', async () => {
-
-        const fakePalestra = new palestra({
-            nome: 'test',
-            indirizzo: {
-                via: 'via'
-            },
-        });
-
-
-        const fakeAbbonamento = {
-
-            deleteOne: async function () {
-                delete this._id;
-            }
-        };
-
-        palestra.findById = async (id) => fakePalestra;
-
-        Abbonamento.findById = async (id) => fakeAbbonamento;
-
-        fakePalestra.abbonamentiDisponibili.pull = (id) => {
-            const index = fakePalestra.abbonamentiDisponibili.indexOf(id);
-            if (index !== -1) {
-                fakePalestra.abbonamentiDisponibili.splice(index, 1);
-            }
-        };
-
-        fakeAbbonamento.deleteOne = () => {
-            delete fakeAbbonamento._id;
-        };
-
-        const response = await request(app)
-            .post(`/api/v1/palestre/${fakePalestra._id}/rimuoviAbbonamento`)
-            .send({ abbonamento: fakeAbbonamento._id });
-
-
-    });
-
-//54545454444444444444444444444444444444444444444444
-it('Dovrebbe rimuovere correttamente l\'abbonamento', async () => {
-    
-    // Simula un abbonamento esistente
-    const fakeAbbonamento = {
-        dewscrizione: 'desscrizione'
-      };
-    
-    // Simula una palestra esistente
-    const fakePalestra = {
-      
-      abbonamentiDisponibili: [fakeAbbonamento._id]
-    };
-   
-    jest.spyOn(palestra, 'findById').mockResolvedValue(fakePalestra);
-    jest.spyOn(Abbonamento, 'findById').mockResolvedValue(fakeAbbonamento);
-
-    const response = await request(app)
-      .post('/api/v1/palestre/fakePalestraId/rimuoviAbbonamento')
-      .send({ abbonamento: fakeAbbonamento._id })
-      .expect(404);
-
-    // Verifica la risposta
-    expect(response.body).toEqual({
-        success: false,
-        message: 'Abbonamento non trovato'
-      });
-      fakePalestra._id = 'fakePalestraId';
-
-      const saveMock = jest.fn();
-      fakePalestra.save = saveMock;
-      
-      // Assert che il metodo save() sia stato chiamato
-     
-    // Verifica che i metodi siano stati chiamati correttamente
-    expect(palestra.findById).toHaveBeenCalledWith('fakePalestraId');
-    expect(Abbonamento.findById).toHaveBeenCalledWith(fakeAbbonamento._id);
-    expect(fakePalestra.abbonamentiDisponibili).toContain(fakeAbbonamento._id);
-
-    expect(saveMock).toHaveBeenCalled();
-    expect(fakeAbbonamento.deleteOne).toHaveBeenCalled();
-
-    // Ripristina i metodi originali
-    Palestra.findById.mockRestore();
-    Abbonamento.findById.mockRestore();
-  });
-
-
-
-
-
-
-
-
-
-});
-describe('GET /api/v1/palestre.test.js', () => {
-    it('Dovrebbe ritornare tutte le paestre', async () => {
-        const fakeId = 'fakeId';
-        const fakePalestra = {
-            id: fakeId,
-            nome: 'Palestra Test',
-            personale: 'Fake Personale',
-            indirizzo: 'Fake Indirizzo'
-        };
-
-        palestra.findById = jest.fn().mockResolvedValue(fakePalestra);
-
-        const res = await request(app).get(`/api/v1/palestre/${fakeId}`);
-
-        expect(res.statusCode).toBe(200);
-        expect(res.body).toEqual({
-            self: `api/v1/palestre/${fakeId}`,
-            nome: 'Palestra Test',
-            personale: 'Fake Personale',
-            indirizzo: 'Fake Indirizzo'
-        });
-
-        expect(palestra.findById).toHaveBeenCalledWith(fakeId);
-    });
-
-
-    it('Dovrebbe ritornare tutte le palestre', async () => {
-        const fakePalestre = [
-            { nome: 'Palestra 1', indirizzo: 'Indirizzo 1' },
-            { nome: 'Palestra 2', indirizzo: 'Indirizzo 2' },
-            { nome: 'Palestra 3', indirizzo: 'Indirizzo 3' }
-        ];
-
-        palestra.find = async () => fakePalestre;
-
-        const response = await request(app).get('/api/v1/palestre');
-    });
-
 });
 
 
-describe('DELETE app/palestre.test.js', () => {
-    it('Dovrebbe eliminare la palestre e ritonrare il successo', async () => {
-        const fakeIdPalestra = 'fakeIdPalestra';
+describe('POST /api/v1/palestre/:idPalestra/aggiungiAbbonamento', () => {
 
-        const fakePalestra = {
-            _id: fakeIdPalestra,
-            personale: [{ _id: 'fakeUtenteId1' }, { _id: 'fakeUtenteId2' }]
-        };
+    var palestraFindById;
+    var palestra;
 
-        palestra.findById = async (id) => fakePalestra;
-        fakePalestra.deleteOne = async function () {
-            delete this._id;
-        };
+    beforeAll( async () => {
+        palestra = await new Palestra ({
+                nome: "Test",
+                personale: [],
+                indirizzo: {
+                  via: 'Via Sommarive',
+                  numeroCivico: 9,
+                  citta: 'Trento'
+                },
+                calendariCorsi: [],
+                abbonamentiDisponibili: []
+              }).save();
 
-        fakePalestra.personale.map((utente) => {
-            utente.deleteOne = async function () {
-                delete this._id;
-            };
+        palestraFindById = jest.spyOn(Palestra, 'findById').mockImplementation( async (id) => {
+            if(id == 'idErrato'){
+                return undefined;
+            } else {
+                return palestra;
+            }
         });
-
-        const response = await request(app)
-            .delete(`/api/v1/palestre/${fakeIdPalestra}`);
-
-        if (fakePalestra.hasOwnProperty('_id')) {
-            throw new Error('Palestra was not removed');//genera un'eccezione e interrompere immediatamente l'esecuzione del codice in quel punto
-        }
     });
 
-    it('Dovrebbe ritornare errore quando non trova la palestra', async () => {
-        const fakeIdPalestra = 'fakeIdPalestraNotFound';
+    afterAll( async () => {
+        palestraFindById.mockRestore();
+        await palestra.deleteOne();
+    });
 
-        palestra.findById = async (id) => null;
+    it('Dovrebbe restituire palestra non trovata', async () => {
+        await request(app)
+                .post('/api/v1/palestre/' + 'idErrato' + '/aggiungiAbbonamento')
+                .send({
+                    token: token
+                })
+                .expect(400)
+                .expect({
+                    success: false,
+                    message: "Palestra non trovata"
+                });
+    });
 
-        const response = await request(app)
-            .delete(`/api/v1/palestre/${fakeIdPalestra}`);
+    it('Dovrebbe restituire abbonamento template salvato', async () => {
+        await request(app)
+                .post('/api/v1/palestre/' + palestra._id + '/aggiungiAbbonamento')
+                .send({
+                    token: token
+                })
+                .expect(201)
+                .expect( async (res) => {
+                    expect(res.body.success).toBe(true);
+                    expect(res.body.message).toBe("Abbonamento template salvato con successo");
+                    expect(res.body.idAbbonamento).toEqual(expect.any(String));
+                    await Abbonamento.findByIdAndDelete(res.body.idAbbonamento);
+                });
+    });
+});
 
-        const expectedResponse = {
-            success: false,
-            message: 'Palestra non trovata'
-        };
-        if (!response.body || JSON.stringify(response.body) !== JSON.stringify(expectedResponse)) {
-            throw new Error('Response body does not match the expected data');
-        }
+
+describe('POST /api/v1/palestre/:idPalestra/rimuoviAbbonamento', () => {
+    
+    var palestraFindById;
+    var abbonamentoFindById;
+    var palestra;
+    var abbonamento;
+    var abbonamentoErrato;
+    
+    beforeAll( async () => {
+        palestra = await new Palestra ({
+            nome: "Test",
+            personale: [],
+            indirizzo: {
+              via: 'Via Sommarive',
+              numeroCivico: 9,
+              citta: 'Trento'
+            },
+            calendariCorsi: [],
+            abbonamentiDisponibili: []
+        }).save();
+
+        abbonamento = await new Abbonamento ({
+            descrizione: "Annuale",
+            dataInizio: "",
+            dataFine: "",
+            idPalestra: palestra._id
+        }).save();
+
+        palestra.abbonamentiDisponibili.push(abbonamento._id);
+        console.log(palestra.abbonamentiDisponibili);
+        await palestra.save();
+
+        abbonamentoErrato = await new Abbonamento ({
+            descrizione: "Annuale",
+            dataInizio: "",
+            dataFine: "",
+            idPalestra: palestra._id
+        }).save();
+
+        palestraFindById = jest.spyOn(Palestra, 'findById').mockImplementation( async (id) => {
+            if(id == 'idErrato'){
+                return undefined;
+            } else {
+                return palestra;
+            }
+        });
+
+        abbonamentoFindById = jest.spyOn(Abbonamento, 'findById').mockImplementation( async (id) => {
+            if(id == 'idErrato'){
+                return undefined;
+            } else if (id == abbonamentoErrato._id) {
+                return abbonamentoErrato;
+            } else {
+                return abbonamento;
+            }
+        });
+    });
+
+    afterAll( async () => {
+        palestraFindById.mockRestore();
+        abbonamentoFindById.mockRestore();
+        await abbonamento.deleteOne();
+        await abbonamentoErrato.deleteOne();
+        await palestra.deleteOne();
+    });
+
+    it('Dovrebbe restituire palestra non trovata', async () => {
+        await request(app)
+                .post('/api/v1/palestre/' + 'idErrato' + '/rimuoviAbbonamento')
+                .send({
+                    token: token
+                })
+                .expect(400)
+                .expect({
+                    success: false,
+                    message: "Palestra non trovata"
+                });
+    });
+
+    it('Dovrebbe restituire abbonamento non trovato', async () => {
+        await request(app)
+                .post('/api/v1/palestre/' + palestra._id + '/rimuoviAbbonamento')
+                .send({
+                    token: token,
+                    abbonamento: "idErrato"
+                })
+                .expect(400)
+                .expect({
+                    success: false,
+                    message: "Abbonamento non trovato"
+                });
+    });
+
+    it('Dovrebbe restituire abbonamento non presente nella palestra', async () => {
+        await request(app)
+                .post('/api/v1/palestre/' + palestra._id + '/rimuoviAbbonamento')
+                .send({
+                    token: token,
+                    abbonamento: abbonamentoErrato._id
+                })
+                .expect(400)
+                .expect({
+                    success: false,
+                    message: "Abbonamento non presente nella palestra"
+                });
+    });
+
+
+    it('Dovrebbe restituire abbonamento template rimosso con successo', async () => {
+        await request(app)
+                .post('/api/v1/palestre/' + palestra._id + '/rimuoviAbbonamento')
+                .send({
+                    token: token,
+                    abbonamento: abbonamento._id
+                })
+                .expect(200)
+                .expect({
+                    success: true,
+                    message: "Abbonamento template rimosso con successo"
+                });
+    });
+});
+
+
+describe('DELETE /api/v1/palestre/:id', () => {
+    
+    var palestraFindById;
+    var palestra;
+    
+    beforeAll( async () => {
+
+        palestra = await new Palestra ({
+            nome: "Test",
+            personale: [],
+            indirizzo: {
+              via: 'Via Sommarive',
+              numeroCivico: 9,
+              citta: 'Trento'
+            },
+            calendariCorsi: [],
+            abbonamentiDisponibili: []
+        }).save();
+
+        palestraFindById = jest.spyOn(Palestra, 'findById').mockImplementation( async (id) => {
+            if(id == 'idErrato'){
+                return undefined;
+            } else {
+                return palestra;
+            }
+        });
+    });
+
+    afterAll( async () => {
+        palestraFindById.mockRestore();
+    });
+
+    it('Dovrebbe restituire palestra non trovata', async () => {
+        await request(app)
+                .delete('/api/v1/palestre/' + 'idErrato')
+                .send({
+                    token: token
+                })
+                .expect(400)
+                .expect({
+                    success: false,
+                    message: "Palestra non trovata"
+                });
+    });
+
+    it('Dovrebbe restituire palestra rimossa con successo', async () => {
+        await request(app)
+                .delete('/api/v1/palestre/' + palestra._id)
+                .send({
+                    token: token
+                })
+                .expect(200)
+                .expect({
+                    success: true,
+                    message: "Palestra rimossa con successo"
+                });
     });
 });
