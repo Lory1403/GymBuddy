@@ -6,11 +6,6 @@ const Abbonamento = require('./models/abbonamento');
 const Utente = require('./models/utente');
 const Geolocation = require('geolocation-utils');
 const NodeGeocoder = require('node-geocoder');
-const palestra = require('./models/palestra');
-
-function showPosition(latitude, longitude) {
-    console.log("Latitude: " + latitude + ", Longitude: " + longitude);
-};
 
 router.get('', (req, res) => {
     var options = {
@@ -21,16 +16,14 @@ router.get('', (req, res) => {
     var geocoder = NodeGeocoder(options);
 
     if (req.body.latitude && req.body.longitude) {
-        showPosition(req.body.latitude, req.body.longitude);
         
+        console.log("esisto");
         var distanze = [];
         var indirizzo;
 
-        
         Palestra.find({}).then( async (palestre) => {
             await Promise.all(palestre.map(async (palestra) => {
-                if (palestra.indirizzo) {
-                    if (palestra.indirizzo.via && 
+                if (palestra.indirizzo.via && 
                         palestra.indirizzo.numeroCivico &&
                         palestra.indirizzo.citta) {
                             indirizzo = palestra.indirizzo.via +
@@ -44,14 +37,13 @@ router.get('', (req, res) => {
                             });
                             
                         }
-                }
             }));
-            res.send(palestre + "\n" + distanze);
+            res.status(200).send(palestre + "\n" + distanze);
         });
     }
     else {
         Palestra.find({}).then(palestre => {
-            res.send(palestre);
+            res.status(200).send(palestre);
         });
     }
       

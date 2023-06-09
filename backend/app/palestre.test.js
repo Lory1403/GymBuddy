@@ -4,7 +4,7 @@ const mongoose = require('mongoose');
 const jwt = require('jsonwebtoken');
 const Palestra = require('./models/palestra');
 const Abbonamento = require('./models/abbonamento');
-const abbonamento = require('./models/abbonamento');
+const Utente = require('./models/utente');
 
 var payload = {
     email: "test@test.com",
@@ -15,19 +15,39 @@ var options = {
 }
 var token = jwt.sign(payload, process.env.SUPER_SECRET, options);
 
-// describe('GET /api/v1/palestre', () => {
-//     beforeAll( async () => {
+describe('GET /api/v1/palestre', () => {
+    beforeAll( async () => {
+    });
 
-//     });
+    afterAll( async () => {
+    });
 
-//     afterAll( async () => {
+    it('Dovrebbe restituire le palestre senza la distanza', async () => {
+        await request(app)
+                .get('/api/v1/palestre')
+                .send({
+                    token: token
+                })
+                .expect(200)
+                .expect( (res) => {
+                    expect(res.body).toEqual(expect.anything());
+                });
+    });
 
-//     });
-
-//     it('', async () => {
-
-//     });
-// });
+    it('Dovrebbe restituire le palestre con la distanza', async () => {
+        await request(app)
+                .get('/api/v1/palestre')
+                .send({
+                    token: token,
+                    latitude: 1.0,
+                    longitude: 1.0
+                })
+                .expect(200)
+                .expect( (res) => {
+                    expect(res.body).toEqual(expect.anything());
+                });
+    });
+});
 
 beforeAll( async () => {
     jest.setTimeout(8000);
@@ -232,7 +252,6 @@ describe('POST /api/v1/palestre/:idPalestra/rimuoviAbbonamento', () => {
         }).save();
 
         palestra.abbonamentiDisponibili.push(abbonamento._id);
-        console.log(palestra.abbonamentiDisponibili);
         await palestra.save();
 
         abbonamentoErrato = await new Abbonamento ({
@@ -331,6 +350,7 @@ describe('DELETE /api/v1/palestre/:id', () => {
     
     var palestraFindById;
     var palestra;
+    var utente;
     
     beforeAll( async () => {
 
@@ -345,6 +365,18 @@ describe('DELETE /api/v1/palestre/:id', () => {
             calendariCorsi: [],
             abbonamentiDisponibili: []
         }).save();
+
+        utente = await new Utente ({
+            nome: "Nome",
+            cognome: "Cognome",
+            email: "email@gmail.com",
+            password: "Password",
+            ruolo: "amm",
+            idPalestra: palestra._id 
+        }).save();
+
+        palestra.personale.push(utente._id);
+        palestra.save();
 
         palestraFindById = jest.spyOn(Palestra, 'findById').mockImplementation( async (id) => {
             if(id == 'idErrato'){
