@@ -1,14 +1,14 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import Login from '../views/Index.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
-    // {
-    //   path: '/',
-    //   name: 'home',
-    //   component: () => import('../views/Index.vue')
-    // },
+    {
+      path: '/',
+      name: 'paginaApertura',
+      component: () => import('../views/paginaApertura.vue')
+    },
+
     {
       path: '/login',
       name: 'login',
@@ -21,6 +21,16 @@ const router = createRouter({
       path: '/registration',
       name: 'registration',
       component: () => import('../views/Registration.vue')
+    },
+    {
+      path: '/palestra',
+      name: 'palestra',
+      component: () => import('../views/Palestra.vue')
+    },
+    {
+      path: '/home',
+      name: 'home',
+      component: () => import('../views/Home.vue')
     }
   ]
 })

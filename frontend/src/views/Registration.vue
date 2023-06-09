@@ -8,12 +8,12 @@
         <label for="inputSurname" class="form-label">Surname</label>
         <input type="Surname" class="form-control" id="Surname" placeholder="Surname">
       </div>
-      <div class="mb-3 py-1">
+ <!--      <div class="mb-3 py-1">
     <label for="select-option"> Seleziona tipo utente: </label>
     <select id="select-option" v-model="selectedOption">
       <option v-for="option in options" :key="option.value" :value="option.value">{{ option.label }}</option>
     </select>
-  </div>
+  </div> -->
       <div class="mb-3 py-1">
         <label for="inputEmail" class="form-label">Indirizzo email</label>
         <input type="email" class="form-control" id="inputEmail" placeholder="name@example.com">
@@ -23,16 +23,20 @@
         <input type="password" class="form-control" id="inputPassword" placeholder="Password">
       </div>
       <button type="submit" class="btn btn-primary py-2 px-5 w-100">Registration</button>
+      <div>
+      <label>Sei già registrato? </label>
+      <RouterLink class="w-auto nav-link d-inline-block" to="/login"> Login</RouterLink>
+    </div>
     </form>
 
-    <div v-if="showConfirmation">
+   <!--  <div v-if="showConfirmation">
       <p>Registrazione avvenuta con successo!</p>
-    </div>
+    </div> -->
 
   </template>
   
 
-  <script>
+  <!-- <script>
   export default {
     data() {
       return {
@@ -46,3 +50,4 @@
     }
   };
   </script> 
+ -->
