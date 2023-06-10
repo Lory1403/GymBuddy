@@ -113,6 +113,8 @@ describe('/api/v1/appuntamenti', () => {
     });
 
     afterAll(async () => {
+        await calendarioCorso.deleteOne();
+        await appuntamento1.deleteOne();
         await calendario1.deleteOne();
         await user1.deleteOne();
         await calendario2.deleteOne();
@@ -297,7 +299,7 @@ describe('/api/v1/appuntamenti', () => {
                 'descrizione': 'test descrizione',
                 'involved': [user1._id, user2._id, user3._id]
             }).expect(201);
-
+        await Appuntamento.findByIdAndRemove(res.header.location.slice(21));
     });
 
     test('POST /api/v1/appuntamenti/corso titolo non specificato', async () => {
@@ -384,7 +386,7 @@ describe('/api/v1/appuntamenti', () => {
                 'involved': [user1._id, user2._id, user3._id]
             }).expect(401);
 
-        expect(res.body.message).toBe('utente non amminstratore');
+        expect(res.body.message).toBe('utente non amministratore');
 
     });
 
@@ -418,9 +420,10 @@ describe('/api/v1/appuntamenti', () => {
                 'courseName': 'corsoTest'
             }).expect(201);
 
+        await Appuntamento.findByIdAndRemove(res.header.location.slice(21));
     });
 
-    test('DELETE /api/v1/appuntamenti id apuntamento mancante', async () => {
+    test('DELETE /api/v1/appuntamenti id appuntamento mancante', async () => {
         var res = await request(app)
             .delete('/api/v1/appuntamenti')
             .set('Accept', 'application/json')
@@ -428,10 +431,10 @@ describe('/api/v1/appuntamenti', () => {
                 'token': token,
             }).expect(400);
 
-        expect(res.body.message).toBe('id appuntemento mancante');
+        expect(res.body.message).toBe('id appuntamento mancante');
     });
 
-    test('DELETE /api/v1/appuntamenti apuntamento non trovato', async () => {
+    test('DELETE /api/v1/appuntamenti appuntamento non trovato', async () => {
         let AppuntamentoNonSalvato = new Appuntamento();
 
         var res = await request(app)
@@ -447,7 +450,7 @@ describe('/api/v1/appuntamenti', () => {
 
     test('DELETE /api/v1/appuntamenti TUTTO OK', async () => {
         var res = await request(app)
-            .delete('/api/v1/appuntamenti')
+            .delete('/api/v1/appuntamenti') 
             .set('Accept', 'application/json')
             .send({
                 'token': token,

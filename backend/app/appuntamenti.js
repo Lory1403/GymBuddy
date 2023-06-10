@@ -5,7 +5,6 @@ const Calendario = require('./models/calendario');
 const Utente = require('./models/utente');
 const Palestra = require('./models/palestra');
 
-
 router.get('', (req, res) => {
     Appuntamento.find({}).then(appuntamenti => {
         res.status(200).send(appuntamenti);
@@ -102,13 +101,14 @@ router.post('', async (req, res) => {
         appuntamento.save();
 
         let missingUsers = [];
+        let calendarioUtente;
 
         await Promise.all(appuntamento.involves.map(async (involved) => {
             let utente = await Utente.findById(involved);
             if (!utente) {
                 missingUsers.push(involved);
             } else {
-                let calendarioUtente = await Calendario.findById(utente.idCalendario);
+                calendarioUtente = await Calendario.findById(utente.idCalendario);
                 calendarioUtente.appuntamenti.push(appuntamento._id);
                 await calendarioUtente.save();
             }
@@ -122,6 +122,15 @@ router.post('', async (req, res) => {
                 message: "uno degli utenti coinvolti non è stato trovato",
                 missingUser: "id utente non trovato: " + missingUsers,
             });
+            await Promise.all(appuntamento.involves.map(async (involved) => {
+                let utente = await Utente.findById(involved);
+                if (utente) {
+                    calendarioUtente = await Calendario.findById(utente.idCalendario);
+                    calendarioUtente.appuntamenti.pull(appuntamento._id);
+                    await calendarioUtente.save();
+                }
+            }));
+            appuntamento.deleteOne();
             return;
         } else {
             res.location("/api/v1/appuntamenti/" + appuntamento._id).status(201).send();
@@ -136,7 +145,6 @@ router.post('', async (req, res) => {
 router.post('/corso', async (req, res) => {
 
     if (checkCommonParams(req, res)) {
-        console.log(req.loggedUser.email);
 
         let utente = await Utente.findOne({ email: req.loggedUser.email });
 
@@ -144,7 +152,7 @@ router.post('/corso', async (req, res) => {
             res.status(401);
             res.json({
                 success: false,
-                message: "utente non amminstratore",
+                message: "utente non amministratore",
             });
             return;
         }
@@ -170,7 +178,6 @@ router.post('/corso', async (req, res) => {
             return;
         }
 
-
         const appuntamento = new Appuntamento({
             isCourse: true,
             titolo: req.body.title,
@@ -193,7 +200,6 @@ router.post('/corso', async (req, res) => {
         await appuntamento.save();
 
         res.location("/api/v1/appuntamenti/" + appuntamento._id).status(201).send();
-
     }
 })
 
@@ -205,7 +211,7 @@ router.delete('', async (req, res) => {
         res.status(400);
         res.json({
             success: false,
-            message: "id appuntemento mancante",
+            message: "id appuntamento mancante",
         });
         return;
     }
@@ -228,7 +234,7 @@ router.delete('', async (req, res) => {
         await calendarioUtente.save();
     }));
 
-    appuntamento.deleteOne();
+    await appuntamento.deleteOne();
 
     console.log('Appintment removed successfully!');
 
