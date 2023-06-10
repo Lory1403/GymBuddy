@@ -188,9 +188,11 @@ router.delete('/:id', async (req, res) => {
         return;
     }
 
-    palestra.personale.map(async (utente) => {
-        utente.deleteOne();
-    });
+    await Promise.all(palestra.personale.map(async (idUtente) => {
+        await Utente.findById(idUtente).then((res) => {
+            res.deleteOne();
+        });
+    }));
 
     palestra.deleteOne();
     res.status(200).json({

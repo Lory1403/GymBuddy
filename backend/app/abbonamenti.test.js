@@ -15,6 +15,7 @@ describe('POST /api/v1/abbonamenti', () => {
   let palestraFindById;
   let abbonamentoFindById;
   let token;
+  let self;
 
   beforeAll( async () => {
     jest.setTimeout(8000);
@@ -68,11 +69,12 @@ describe('POST /api/v1/abbonamenti', () => {
   });
 
   afterAll(async () =>{
+    self = self.slice(19);
+    await Abbonamento.findByIdAndRemove(self);
     userFindById.mockRestore();
     palestraFindById.mockRestore();
     abbonamentoFindById.mockRestore();
-
-    mongoose.connection.close(true); 
+    await mongoose.connection.close(true); 
   });
 
   //Abbonamento Inserito
@@ -86,6 +88,7 @@ describe('POST /api/v1/abbonamenti', () => {
             })
             .expect(200)
             .expect((res) => {
+              self = res.body.self;
               expect(res.body.self).toMatch('api\/v1\/abbonamenti\/');
               expect(res.body.success).toBe(true);
               expect(res.body.message).toBe("Abbonamento inserito");
@@ -217,6 +220,7 @@ describe('GET /api/v1/abbonamenti/:id', () => {
       success: false,
       message: 'Abbonamento non trovato',
     });
+    findByIdMock.mockRestore();
   });
 });
 

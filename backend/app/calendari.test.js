@@ -14,6 +14,7 @@ describe('/api/v1/calendari', () => {
     let userAmm;
     let palestra;
     let calendarioCorso;
+    let self;
 
     beforeAll(async () => {
         jest.setTimeout(8000);
@@ -60,7 +61,13 @@ describe('/api/v1/calendari', () => {
 
 
     afterAll(async () => {
-        mongoose.connection.close(true);
+        self = self.slice(18);
+        await Calendario.findByIdAndRemove(self);
+        await calendarioAmm.deleteOne();
+        await userAmm.deleteOne();
+        await palestra.deleteOne();
+        await calendarioCorso.deleteOne();
+        await mongoose.connection.close(true);
         console.log("Database connection closed");
     });
 
@@ -130,7 +137,7 @@ describe('/api/v1/calendari', () => {
     });
 
     test('POST /api/v1/calendari palestra non trovata', async () => {
-        let palestraNonSalvata = new Palestra()
+        let palestraNonSalvata = new Palestra();
 
         var res = await request(app)
             .post('/api/v1/calendari/')
@@ -153,6 +160,7 @@ describe('/api/v1/calendari', () => {
                 'idPalestra': palestra._id
             }).expect(201);
         expect(res.body.self).toMatch('api\/v1\/calendari\/');
+        self = res.body.self;
     });
 
     test('DELETE /api/v1/calendari idCalendario non inserito', async () => {

@@ -15,11 +15,35 @@ var options = {
 }
 var token = jwt.sign(payload, process.env.SUPER_SECRET, options);
 
+beforeAll( async () => {
+    jest.setTimeout(8000);
+    app.locals.db = await mongoose.connect(process.env.DB_URL);
+});
+
+afterAll( async () => {
+    await mongoose.connection.close(true);
+});
+
 describe('GET /api/v1/palestre', () => {
+    
+    var palestra;
+    
     beforeAll( async () => {
+        palestra = await new Palestra ({
+            nome: "Test",
+            personale: [],
+            indirizzo: {
+              via: 'Via Sommarive',
+              numeroCivico: '9',
+              citta: 'Trento'
+            },
+            calendariCorsi: [],
+            abbonamentiDisponibili: []
+          }).save();
     });
 
     afterAll( async () => {
+        await palestra.deleteOne();
     });
 
     it('Dovrebbe restituire le palestre senza la distanza', async () => {
@@ -47,15 +71,6 @@ describe('GET /api/v1/palestre', () => {
                     expect(res.body).toEqual(expect.anything());
                 });
     });
-});
-
-beforeAll( async () => {
-    jest.setTimeout(8000);
-    app.locals.db = await mongoose.connect(process.env.DB_URL);
-});
-
-afterAll( async () => {
-    await mongoose.connection.close(true);
 });
 
 describe('GET /api/v1/palestre/:id', () => {
@@ -122,14 +137,16 @@ describe('GET /api/v1/palestre/:id', () => {
 
 describe('POST /api/v1/palestre', () => {
     
-    var self;
+    var selfPalestra;
+    var selfUtente;
     
     beforeAll( async () => {
     });
 
     afterAll( async () => {
-        self = self.slice(16);
-        await Palestra.findByIdAndRemove(self);
+        selfPalestra = selfPalestra.slice(16);
+        await Palestra.findByIdAndRemove(selfPalestra);
+        await Utente.findByIdAndRemove(selfUtente);
     });
 
     it('Dovrebbe restituire palestra creata', async () => {
@@ -148,7 +165,8 @@ describe('POST /api/v1/palestre', () => {
             })
             .expect(201)
             .expect((res) => {
-                self = res.body.self;
+                selfPalestra = res.body.self;
+                selfUtente = res.body.personale[0];
                 expect(res.body.success).toBe(true);
                 expect(res.body.message).toBe("Palestra e amministratore creati");
                 expect(res.body.self).toMatch('api\/v1\/palestre\/');

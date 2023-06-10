@@ -5,8 +5,11 @@ test('app module should be defined', () => {
   expect(app).toBeDefined();
 });
 
-test('GET / should return 200', () => {
+test('GET / should return 404', () => {
   return request(app)
     .get('/')
-    .expect(200);
+    .expect(404)
+    .expect({
+      error: "Not found"
+    });
 });

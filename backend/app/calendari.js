@@ -58,10 +58,6 @@ router.post('', async (req, res) => {
         return;
     }
 
-    let calendario = await new Calendario({
-        nome: req.body.nome
-    }).save();
-
     if (!req.body.idPalestra) {
         res.status(400).json({
             success: false,
@@ -80,6 +76,10 @@ router.post('', async (req, res) => {
         console.log('Palestra non trovata');
         return;
     }
+
+    let calendario = await new Calendario({
+        nome: req.body.nome
+    }).save();
 
     palestra.calendariCorsi.push(calendario._id);
     palestra.save();

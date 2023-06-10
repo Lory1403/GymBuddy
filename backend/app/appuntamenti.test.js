@@ -10,7 +10,6 @@ const Appuntamento = require('./models/appuntamento');
 
 
 describe('/api/v1/appuntamenti', () => {
-    let connection;
     let calendario1;
     let calendario2;
     let calendario3;
@@ -27,8 +26,7 @@ describe('/api/v1/appuntamenti', () => {
     beforeAll(async () => {
         jest.setTimeout(8000);
         jest.unmock('mongoose');
-        connection = await mongoose.connect(process.env.DB_URL, { useNewUrlParser: true, useUnifiedTopology: true });
-        console.log('Database connected!');
+        app.locals.db = await mongoose.connect(process.env.DB_URL, { useNewUrlParser: true, useUnifiedTopology: true });
 
         appuntamento1 = await new Appuntamento({
             titolo: 'appuntamento test 1',
@@ -61,7 +59,7 @@ describe('/api/v1/appuntamenti', () => {
             email: 'email.test2@prova.it',
             password: 'password2',
             idCalendario: calendario2._id,
-            ruolo: 'abb',
+            ruolo: 'abb'
         }).save();
 
         calendario3 = await new Calendario({
@@ -73,7 +71,7 @@ describe('/api/v1/appuntamenti', () => {
             email: 'email.test3@prova.it',
             password: 'password3',
             idCalendario: calendario3._id,
-            ruolo: 'abb',
+            ruolo: 'abb'
         }).save();
 
         calendarioCorso = await new Calendario({
@@ -103,7 +101,7 @@ describe('/api/v1/appuntamenti', () => {
         await palestra.save();
 
         var payload = {
-            email: userAmm.email,
+            email: userAmm.email
         };
 
         var options = {
@@ -115,16 +113,16 @@ describe('/api/v1/appuntamenti', () => {
     });
 
     afterAll(async () => {
-        await Calendario.findByIdAndDelete(calendario1._id);
-        await Utente.findByIdAndDelete(user1._id);
-        await Calendario.findByIdAndDelete(calendario2._id);
-        await Utente.findByIdAndDelete(user2._id);
-        await Calendario.findByIdAndDelete(calendario3._id);
-        await Utente.findByIdAndDelete(user3._id);
-        await Calendario.findByIdAndDelete(calendarioAmm._id);
-        await Utente.findByIdAndDelete(userAmm._id);
-        await Palestra.findByIdAndDelete(palestra._id);
-        mongoose.connection.close(true);
+        await calendario1.deleteOne();
+        await user1.deleteOne();
+        await calendario2.deleteOne();
+        await user2.deleteOne();
+        await calendario3.deleteOne();
+        await user3.deleteOne();
+        await calendarioAmm.deleteOne();
+        await userAmm.deleteOne();
+        await palestra.deleteOne();
+        await mongoose.connection.close(true);
         console.log("Database connection closed");
     });
 

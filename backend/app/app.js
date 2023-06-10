@@ -33,9 +33,6 @@ app.use(cors({
   origin: 'http://localhost:5173'
 }));
 
-
-
-
 // api nostre protette
 app.use('/api/v1/palestre', tokenChecker);
 app.use('/api/v1/abbonamento', tokenChecker);
@@ -53,11 +50,6 @@ app.use('/api/v1/abbonamenti', abbonamenti);
 app.use('/api/v1/calendari', calendari); // dentro a calendario usiamo la api di appuntamento
 app.use('/api/v1/appuntamenti', appuntamenti);
 
-
-
-app.get("/api/v1/hello", (req, res) => {
-  res.json({ msg: "Hello world!" });
-});
 
 /* Default 404 handler */
 app.use((req, res) => {

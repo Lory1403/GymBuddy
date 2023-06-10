@@ -8,6 +8,7 @@ describe('POST /api/v1/registrazione', () => {
     const User = require('./models/utente');
 
     let userFindOne;
+    let self;
 
     beforeAll( async () => {
         jest.setTimeout(8000);
@@ -28,8 +29,10 @@ describe('POST /api/v1/registrazione', () => {
     });
 
     afterAll(async () =>{
+        self = self.slice(14);
+        await User.findByIdAndRemove(self);
         userFindOne.mockRestore();
-        mongoose.connection.close(true);
+        await mongoose.connection.close(true);
     });
 
     // Utente già esistente 
@@ -60,6 +63,7 @@ describe('POST /api/v1/registrazione', () => {
                     password: 'password'
                 })
                 .expect( (res) => {
+                    self = res.body.self;
                     expect(res.body.success).toBe(true);
                     expect(res.body.message).toBe("Utente creato. Enjoy your token!");
                     expect(res.body.token).toEqual(expect.anything());

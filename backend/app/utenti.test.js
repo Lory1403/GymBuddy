@@ -3,28 +3,35 @@ const app      = require('./app');
 const jwt      = require('jsonwebtoken');
 const mongoose = require('mongoose');
 const User = require('./models/utente');
+const Calendario = require('./models/calendario');
+
+var payload = {
+    email: "test@test.com",
+    id: "1234"
+};
+
+var options = {
+    expiresIn: 86400 // expires in 24 hours
+};
+
+var token = jwt.sign(payload, process.env.SUPER_SECRET, options);
+
+beforeAll( async () => {
+    jest.setTimeout(8000);
+    app.locals.db = await mongoose.connect(process.env.DB_URL);
+});
+
+afterAll( async () => {
+    await mongoose.connection.close(true);
+});
 
 describe("GET /api/v1/utenti/me", () => {
 
     let userFindOne;
-    let token;
     let tokenErrato;
 
     beforeAll( async () => {
-
-        jest.setTimeout(8000);
-        app.locals.db = await mongoose.connect(process.env.DB_URL);
-
-        var payload = {
-            email: "test@test.com",
-            id: "1234"
-        };
-
-        var options = {
-            expiresIn: 86400 // expires in 24 hours
-        };
-
-        token = jwt.sign(payload, process.env.SUPER_SECRET, options);
+        
         tokenErrato = jwt.sign(payload, "password sbagliata", options);
 
         userFindOne = jest.spyOn(User, 'findOne').mockImplementation( async (loggedUser) => {
@@ -90,23 +97,9 @@ describe("GET /api/v1/utenti/me", () => {
 describe("POST /api/v1/utenti", () => {
     
     let userFindOne;
-    let token;
+    let selfUtente;
 
     beforeAll( async () => {
-        jest.setTimeout(8000);
-        app.locals.db = await mongoose.connect(process.env.DB_URL);
-
-        var payload = {
-            email: "test@test.com",
-            id: "1234"
-        };
-
-        var options = {
-            expiresIn: 86400 // expires in 24 hours
-        };
-
-        token = jwt.sign(payload, process.env.SUPER_SECRET, options);
-
         userFindOne = jest.spyOn(User, 'findOne').mockImplementation( async (req) => {
             if (req.email == "presente@test.com") {
                 return new User({
@@ -118,13 +111,15 @@ describe("POST /api/v1/utenti", () => {
             } else {
                 return undefined;
             }
-            
         });
     });
 
     afterAll( async () => {
         userFindOne.mockRestore();
-        mongoose.connection.close(true);
+        selfUtente = selfUtente.slice(15);
+        let utente = await User.findById(selfUtente);
+        await Calendario.findByIdAndRemove(utente.idCalendario);
+        await User.findByIdAndRemove(selfUtente);
     });
 
     it('Dovrebbe restituire utente già esistente', async () => {
@@ -154,10 +149,10 @@ describe("POST /api/v1/utenti", () => {
             })
             .expect(201)
             .expect( (res) => {
+                selfUtente = res.body.self;
                 expect(res.body.success).toBe(true);
                 expect(res.body.message).toBe("Utente creato");
-                expect(res.body.self).toMatch('api\/v1\/utenti\/');
+                expect(res.body.self).toMatch('/api\/v1\/utenti\/');
             });
-        
     });
 });
