@@ -1,0 +1,1318 @@
+openapi: 3.0.0
+info:
+  title: GymBuddy - OpenAPI 3.0
+  description: |-
+    All'interno di questo documento verranno inserite tutte le principali API da noi creare. Ci sara' una spiegazione generale introduttiva e successivamente verranno esposti i metodi che essa utilizza, con i relativi risultati
+    
+    Some useful links:
+    - [GymBUddy](https://github.com/Lory1403/GymBuddy/tree/main)
+    - [La sorgente delle API descritte](https://github.com/Lory1403/GymBuddy/tree/main/backend/appl)
+
+  contact:
+    url : https://www.unitn.it/
+  
+  version: 1.0.11
+externalDocs:
+  description: Find out more about Swagger
+  url: http://swagger.io
+servers:
+  - url: http://localhost:8080
+  
+  
+tags:
+  - name: Abbonamenti
+    description: Gestione abbonamenti
+    externalDocs:
+      description: Find out more
+      url: >-
+        https://github.com/Lory1403/GymBuddy/blob/main/backend/app/abbonamenti.js
+  - name: Utenti
+    description: Operazioni sugli utenti
+    externalDocs:
+      description: Find out more
+      url: >-
+        https://github.com/Lory1403/GymBuddy/blob/main/backend/app/utenti.js
+  - name: Appuntamenti
+    description: Gestione appuntamenti
+    externalDocs:
+      description: Find out more
+      url: >-
+        https://github.com/Lory1403/GymBuddy/blob/main/backend/app/appuntamenti.js
+  - name: Authentication
+    description: Autenticazione utenti
+    externalDocs:
+      description: Find out more
+      url: >-
+        https://github.com/Lory1403/GymBuddy/blob/main/backend/app/autenticazione.js
+  - name: Calendari
+    description: Gestione calendari
+    externalDocs:
+      description: Find out more
+      url: >-
+        https://github.com/Lory1403/GymBuddy/blob/main/backend/app/calendari.js
+  - name: Palestre
+    description: Gestione palestre
+    externalDocs:
+      description: Find out more
+      url: >-
+        https://github.com/Lory1403/GymBuddy/blob/main/backend/app/palestre.js
+paths:
+  /api/v1/abbonamenti:
+    post:
+      tags:
+        - Abbonamenti
+      summary: Crea un nuovo abbonamento
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                id:
+                  type: string
+                  description: ID dell'utente
+                idPalestra:
+                  type: string
+                  description: ID della palestra
+                descrizione:
+                  type: string
+                  description: Descrizione dell'abbonamento
+                dataInizio:
+                  type: string
+                  format: date
+                  description: Data di inizio dell'abbonamento
+                dataFine:
+                  type: string
+                  format: date
+                  description: Data di fine dell'abbonamento
+      responses:
+        '200':
+          description: Abbonamento creato con successo
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  self:
+                    type: string
+                    description: URL dell'abbonamento creato
+                  descrizione:
+                    type: string
+                    description: Descrizione dell'abbonamento
+                  dataInizio:
+                    type: string
+                    format: date
+                    description: Data di inizio dell'abbonamento
+                  dataFine:
+                    type: string
+                    format: date
+                    description: Data di fine dell'abbonamento
+                  success:
+                    type: boolean
+                    description: Stato di successo
+                  message:
+                    type: string
+                    description: Messaggio di conferma
+              example:
+                self: /api/v1/abbonamenti/1
+                descrizione: Abbonamento mensile
+                dataInizio: '2023-05-01'
+                dataFine: '2023-05-31'
+                success: true
+                message: Abbonamento inserito
+        '409':
+          description: Utente non trovato, abbonamento già presente o palestra non trovata
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  message:
+                    type: string
+              example:
+                success: false
+                message: Utente non trovato
+              
+        
+    get:
+      tags:
+        - Abbonamenti
+      summary: Restituisce tutti gli abbonamenti
+      responses:
+        '200':
+          description: Elenco di tutti gli abbonamenti
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    self:
+                      type: string
+                      description: URL dell'abbonamento
+                    descrizione:
+                      type: string
+                      description: Descrizione dell'abbonamento
+                    dataInizio:
+                      type: string
+                      format: date
+                      description: Data di inizio dell'abbonamento
+                    dataFine:
+                      type: string
+                      format: date
+                      description: Data di fine dell'abbonamento
+              example:
+                - self: /api/v1/abbonamenti/1
+                  descrizione: Abbonamento mensile
+                  dataInizio: '2023-05-01'
+                  dataFine: '2023-05-31'
+                - self: /api/v1/abbonamenti/2
+                  descrizione: Abbonamento annuale
+                  dataInizio: '2023-01-01'
+                  dataFine: '2023-12-31'
+  /api/v1/abbonamenti/{id}:
+    get:
+      tags:
+        - Abbonamenti
+      summary: Restituisce un abbonamento specifico
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+          description: ID dell'abbonamento
+      responses:
+        '200':
+          description: Abbonamento trovato
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  self:
+                    type: string
+                    description: URL dell'abbonamento
+                  descrizione:
+                    type: string
+                    description: Descrizione dell'abbonamento
+                  dataInizio:
+                    type: string
+                    format: date
+                    description: Data di inizio dell'abbonamento
+                  dataFine:
+                    type: string
+                    format: date
+                    description: Data di fine dell'abbonamento
+              example:
+                self: /api/v1/abbonamenti/1
+                descrizione: Abbonamento mensile
+                dataInizio: '2023-05-01'
+                dataFine: '2023-05-31'
+        '409':
+          description: Abbonamento non trovato
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  message:
+                    type: string
+              example:
+                success: false
+                message: Abbonamento non trovato
+                
+  # APPUNTAMENTI              
+                
+  /api/v1/appuntamenti:
+    get:
+      tags:
+        - Appuntamenti
+      summary: Ottieni tutti gli appuntamenti
+      responses:
+        '200':
+          description: Elenco di tutti gli appuntamenti
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    self:
+                      type: string
+                    descrizione:
+                      type: string
+                    dataInizio:
+                      type: string
+                    dataFine:
+                      type: string
+                  example:
+                    - self: api/v1/appuntamenti/1
+                      descrizione: Appuntamento 1
+                      dataInizio: '2023-06-08T10:00:00Z'
+                      dataFine: '2023-06-08T11:00:00Z'
+                    - self: api/v1/appuntamenti/2
+                      descrizione: Appuntamento 2
+                      dataInizio: '2023-06-09T14:00:00Z'
+                      dataFine: '2023-06-09T15:00:00Z'
+   
+    
+    
+    post:
+      tags:
+        - Appuntamenti
+      summary: Crea un nuovo appuntamento
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                date:
+                  type: string
+                  format: date-time
+                descrizione:
+                  type: string
+                involved:
+                  type: array
+                  items:
+                    type: string
+      responses:
+        '201':
+          description: Appuntamento creato con successo
+          headers:
+            Location:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  message:
+                    type: string
+              example:
+                success: true
+                message: Appuntamento creato con successo
+        
+        '206':
+          description: UNo degli utenti coinvolti non è stato creato
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  message:
+                    type: string
+              example:
+                success: false
+                message: Involved non trovato 
+                
+    delete:
+      tags:
+        - Appuntamenti
+      summary: Elimina un appuntamento
+      parameters:
+        - in: query
+          name: _id
+          required: true
+          schema:
+            type: string
+      responses:
+        '204':
+          description: Appuntamento eliminato con successo
+        '400':
+          description: Richiesta non valida
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  message:
+                    type: string
+        '404':
+          description: Appuntamento non trovato
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  message:
+                    type: string
+              example:
+                success: false
+                message: Appuntamwnto non trovato
+  /api/v1/appuntamenti/byuser:
+    get:
+      tags:
+        - Appuntamenti
+      summary: Ottieni gli appuntamenti per un utente
+      parameters:
+        - in: query
+          name: idUtente
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Appuntamenti ottenuti con successo
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    self:
+                      type: string
+                    titolo:
+                      type: string
+                    descrizione:
+                      type: string
+                    data:
+                      type: string
+        '400':
+          description: Richiesta non valida
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  message:
+                    type: string
+              example:
+                success: false
+                message: Id utente mancante
+
+        '404':
+          description: Appuntamento non trovato
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  message:
+                    type: string
+              example:
+                success: false
+                message: Utente non trovato
+                
+                
+                
+                
+  /api/v1/appuntamenti/corso:
+    post:
+      tags:
+        - Appuntamenti
+      summary: Crea un nuovo appuntamento per un corso
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                date:
+                  type: string
+                  format: date
+                descrizione:
+                  type: string
+                involved:
+                  type: array
+                  items:
+                    type: string
+      responses:
+        '201':
+          description: Appuntamento del corso creato con successo
+        '400':
+          description: Richiesta non valida
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  message:
+                    type: string
+              example:
+                success: false
+                message: Utente non amministratore
+        '404':
+          description: Calendario corso non trovato
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  message:
+                    type: string
+              example:
+                success: false
+                message: Calendario corso non trovato
+                
+                
+                
+  /api/v1/appuntamenti/bycalendar:
+    get:
+      tags:
+        - Appuntamenti
+      summary: Ottieni gli appuntamenti di un calendario
+      parameters:
+        - in: query
+          name: idCalendario
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Appuntamenti ottenuti con successo
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    self:
+                      type: string
+                    titolo:
+                      type: string
+                    descrizione:
+                      type: string
+                    data:
+                      type: string
+                      format: date
+        '400':
+          description: Richiesta non valida
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  message:
+                    type: string
+              example:
+                success: false
+                message: Id calendario mancante
+        '404':
+          description: Calendario non trovato
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  message:
+                    type: string
+              example:
+                success: false
+                message: Calendario non trovato
+  /api/v1/authentication:
+    post:
+      tags:
+        - Authentication
+      summary: Autenticazione dell'utente
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                password:
+                  type: string
+              required:
+                - email
+                - password
+      responses:
+        '401':
+          description: Autenticazione fallita
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  message:
+                    type: string
+              example:
+                success: false
+                message: Autenticazione fallita. Utente non trovato/password errata
+                
+                
+  /api/v1/utenti:
+    post:
+      tags:
+        - Utenti
+      summary: Creazione di un nuovo utente
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                nome:
+                  type: string
+                cognome:
+                  type: string
+                email:
+                  type: string
+                password:
+                  type: string
+                ruolo:
+                  type: string
+              required:
+                - nome
+                - cognome
+                - email
+                - password
+                - role
+      responses:
+        '201':
+          description: Utente creato con successo
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: Utente creato
+                  self:
+                    type: string
+                    example: /api/v1/utenti/{utenteId}
+        '409':
+          description: Conflitto - L'utente esiste già
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: L'utente esiste già
+  /api/v1/utenti/me:
+    get:
+      tags:
+        - Utenti
+      summary: Ottieni informazioni sull'utente autenticato
+      responses:
+        '200':
+          description: Successo - Utente trovato
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  self:
+                    type: string
+                    example: /api/v1/utenti/{utenteId}
+                  email:
+                    type: string
+                    example: example@example.com
+  /api/v1/calendari:
+    get:
+      tags:
+        - Calendari
+      summary: Ottieni tutti i calendari
+      responses:
+        '200':
+          description: Successo - Calendari trovati
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    self:
+                      type: string
+                      example: /api/v1/calendari/{calendarioId}
+                    nome:
+                      type: string
+                      example: My Calendar
+    post:
+      tags:
+        - Calendari
+      summary: Crea un nuovo calendario
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                nome:
+                  type: string
+                  description: Nome del calendario da creare
+                idPalestra:
+                  type: string
+                  description: ID della palestra a cui associare il calendario
+              required:
+                - nome
+                - idPalestra
+      responses:
+        '201':
+          description: Calendario creato con successo
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  self:
+                    type: string
+                    description: Link all'endpoint del calendario creato
+        '400':
+          description: Richiesta non valida - Nome o ID della palestra mancante
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  message:
+                    type: string
+              example:
+                success: false
+                message: Id palestra non inserito
+        '404':
+          description: Palestra non trovata
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  message:
+                    type: string
+              example:
+                success: false
+                message: Palestra non trovata
+    delete:
+      tags:
+        - Calendari
+      summary: Rimuove un calendario
+      parameters:
+        - in: query
+          name: id
+          required: true
+          schema:
+            type: string
+          description: ID del calendario da rimuovere
+        - in: query
+          name: idPalestra
+          required: true
+          schema:
+            type: string
+          description: ID della palestra associata al calendario
+      responses:
+        '200':
+          description: Successo - Calendario rimosso
+        
+        '400':
+          description: Calendario o palestra non inserito
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  message:
+                    type: string
+              example:
+                success: false
+                message: Id calendario/Id palestra non inseriti
+                
+        
+        '404':
+          description: Calendario o palestra non trovati
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  message:
+                    type: string
+              example:
+                success: false
+                message: Calendario non trovato/Palestra non trovata
+                
+                
+                
+  /api/v1/calendari/byid:
+    get:
+      tags:
+        - Calendari
+      summary: Ottiene un calendario per ID
+      parameters:
+        - in: query
+          name: id
+          required: true
+          schema:
+            type: string
+          description: ID del calendario da ottenere
+      responses:
+        '200':
+          description: Successo - Calendario ottenuto
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  self:
+                    type: string
+                    description: Link all'endpoint del calendario
+                  nome:
+                    type: string
+                    description: Nome del calendario
+                  appuntamenti:
+                    type: array
+                    items:
+                      type: string
+                    description: Elenco degli ID degli appuntamenti nel calendario
+        '400':
+          description: Richiesta non valida - ID mancante
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  message:
+                    type: string
+              example:
+                success: false
+                message: Id calendario/Id palestra non isneriti
+        '404':
+          description: Calendario non trovato
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  message:
+                    type: string
+              example:
+                success: false
+                message: Calendario non trovato/Palestra non trovata
+  /api/v1/palestre:
+    get:
+      tags:
+        - Palestre
+      summary: Ottieni elenco palestre
+      parameters:
+        - in: query
+          name: latitude
+          schema:
+            type: number
+            format: float
+          description: Latitudine per il calcolo delle distanze (opzionale)
+        - in: query
+          name: longitude
+          schema:
+            type: number
+            format: float
+          description: Longitudine per il calcolo delle distanze (opzionale)
+      responses:
+        '200':
+          description: Elenco palestre ottenuto con successo
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    _id:
+                      type: string
+                      description: ID della palestra
+                    nome:
+                      type: string
+                      description: Nome della palestra
+                    indirizzo:
+                      type: object
+                      properties:
+                        via:
+                          type: string
+                          description: Via della palestra
+                        numeroCivico:
+                          type: string
+                          description: Numero civico della palestra
+                        citta:
+                          type: string
+                          description: Città della palestra
+    post:
+      tags:
+        - Palestre
+      summary: Creazione palestra e amministratore
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                nome:
+                  type: string
+                  description: Nome della palestra
+                indirizzo:
+                  type: object
+                  properties:
+                    via:
+                      type: string
+                      description: Via della palestra
+                    numeroCivico:
+                      type: string
+                      description: Numero civico della palestra
+                    citta:
+                      type: string
+                      description: Città della palestra
+                nomeAmm:
+                  type: string
+                  description: Nome dell'amministratore
+                cognomeAmm:
+                  type: string
+                  description: Cognome dell'amministratore
+                emailAmm:
+                  type: string
+                  format: email
+                  description: Email dell'amministratore
+                passwordAmm:
+                  type: string
+                  description: >-
+                    Password dell'amministratore (solo se registrato tramite
+                    form)
+      responses:
+        '201':
+          description: Palestra e amministratore creati con successo
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    description: Indicatore di successo
+                  message:
+                    type: string
+                    description: Messaggio di successo
+                  self:
+                    type: string
+                    description: URL della risorsa palestra creata
+                  nome:
+                    type: string
+                    description: Nome della palestra
+                  personale:
+                    type: array
+                    description: Elenco degli utenti appartenenti alla palestra
+                    items:
+                      type: string
+                      description: ID dell'utente
+                  indirizzo:
+                    type: object
+                    description: Indirizzo della palestra
+                    properties:
+                      via:
+                        type: string
+                        description: Via della palestra
+                      numeroCivico:
+                        type: string
+                        description: Numero civico della palestra
+                      citta:
+                        type: string
+                        description: Città della palestra
+  /api/v1/palestre/{id}:
+    get:
+      tags:
+        - Palestre
+      summary: Ottieni una palestra specifica
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+          description: ID della palestra da ottenere
+      responses:
+        '200':
+          description: Palestra trovata
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  self:
+                    type: string
+                    description: URL della risorsa palestra
+                  nome:
+                    type: string
+                    description: Nome della palestra
+                  personale:
+                    type: array
+                    description: Elenco degli utenti appartenenti alla palestra
+                    items:
+                      type: string
+                      description: ID dell'utente
+                  indirizzo:
+                    type: object
+                    description: Indirizzo della palestra
+                    properties:
+                      via:
+                        type: string
+                        description: Via della palestra
+                      numeroCivico:
+                        type: string
+                        description: Numero civico della palestra
+                      citta:
+                        type: string
+                        description: Città della palestra
+        '400':
+          description: Richiesta non valida - ID palestra non valido
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  message:
+                    type: string
+              example:
+                success: false
+                message: Palestra non trovata
+    delete:
+      tags:
+        - Palestre
+      summary: Rimuovi una palestra
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+          description: ID della palestra da rimuovere
+      responses:
+        '200':
+          description: Palestra rimossa con successo
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    description: Indicatore di successo
+                  message:
+                    type: string
+                    description: Messaggio di successo
+        '400':
+          description: Richiesta non valida - Palestra non trovata
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  message:
+                    type: string
+              example:
+                success: false
+                message: Palestra non trovata
+                    
+                    
+  /api/v1/palestre/{idPalestra}/aggiungiAbbonamento:
+    post:
+      tags:
+        - Palestre
+      summary: Aggiungi un abbonamento alla palestra
+      parameters:
+        - in: path
+          name: idPalestra
+          required: true
+          schema:
+            type: string
+          description: ID della palestra a cui aggiungere l'abbonamento
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                descrizione:
+                  type: string
+                  description: Descrizione dell'abbonamento
+      responses:
+        '201':
+          description: Abbonamento template aggiunto con successo
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    description: Indicatore di successo
+                  message:
+                    type: string
+                    description: Messaggio di successo
+                  idAbbonamento:
+                    type: string
+                    description: ID dell'abbonamento aggiunto
+        '400':
+          description: Richiesta non valida - ID palestra non valido o dati mancanti
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  message:
+                    type: string
+              example:
+                success: false
+                message: Palestra non trovata
+                
+                
+  /api/v1/palestre/{idPalestra}/rimuoviAbbonamento:
+    post:
+      tags:
+        - Palestre
+      summary: Rimuovi un abbonamento dalla palestra
+      parameters:
+        - in: path
+          name: idPalestra
+          required: true
+          schema:
+            type: string
+          description: ID della palestra da cui rimuovere l'abbonamento
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                abbonamento:
+                  type: string
+                  description: ID dell'abbonamento da rimuovere
+      responses:
+        '200':
+          description: Abbonamento template rimosso con successo
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    description: Indicatore di successo
+                  message:
+                    type: string
+                    description: Messaggio di successo
+        '400':
+          description: >-
+            Richiesta non valida - ID palestra non valido, abbonamento non
+            trovato o abbonamento non presente nella palestra
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  message:
+                    type: string
+              example:
+                success: false
+                message: Abbonamento non trovato o abbonamento non presente nella palestra.
+                
+                
+                
+                
+                
+                
+
+      
+#MODELS
+
+components:
+  schemas:
+  
+    Abbonamento:
+      type: object
+      properties:
+        descrizione:
+          type: string
+          example: Abbonamento mesile
+        dataInizio:
+          type: string
+          format: date
+        dataFine:
+          type: string
+          format: date
+        idPalestra:
+          type: string
+          example: 121212
+        prezzo:
+          type: number
+          example: 80
+  
+  
+    Utente:
+      type: object
+      properties:
+        googleId:
+          type: string
+          example: asd46d4654
+        nome:
+          type: string
+          example: Mario
+        cognome:
+          type: string
+          example: Rossi
+        email:
+          type: string
+          example: mariorossi@exaple.com
+        password:
+          type: string
+        idCalendario:
+          type: string
+          example: 131313
+        ruolo:
+          type: string
+          example: amm
+        idAbbonamento:
+          type: string
+          example: 141414
+        idPalestra:
+          type: string
+          example: 121212
+  
+    Appuntamento:
+      type: object
+      properties:
+        isCourse:
+          type: boolean
+          default: false
+        involves:
+          type: array
+          items:
+            type: string
+        titolo:
+          type: string
+          example: Valutazione
+        descrizione:
+          type: string
+          example: Valutazione fisica di Mario Rossi
+        data:
+          type: string
+          format: date-time
+  
+
+    
+    
+    Calendario:
+      type: object
+      properties:
+        nome:
+          type: string
+          example: Tabata
+        appuntamenti:
+          type: array
+          items:
+            type: string
+    
+    
+    
+    
+    Palestra:
+      type: object
+      properties:
+        nome:
+          type: string
+          example: Fitup
+        personale:
+          type: array
+          items:
+            type: string
+        indirizzo:
+          type: object
+          properties:
+            via:
+              type: string
+              example: Giuseppe Verdi
+            numeroCivico:
+              type: string
+              example: 45
+            citta:
+              type: string
+              example: Trento
+            provincia:
+              type: string
+              example: TN
+            paese:
+              type: string
+              example: Italia
+            cap:
+              type: integer
+              example: 38122
+        calendariCorsi:
+          type: array
+          items:
+            type: string
+        abbonamentiDisponibili:
+          type: array
+          items:
+            type: string
+            
