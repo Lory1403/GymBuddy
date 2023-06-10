@@ -1,4 +1,4 @@
-const env = require('dotenv').config();
+require('dotenv').config();
 const app = require('./app/app.js');
 const mongoose = require('mongoose');
 
@@ -8,7 +8,7 @@ app.locals.db = mongoose.connect(process.env.DB_URL, {useNewUrlParser: true, use
 .then ( () => {
     
     console.log("Connected to Database");
-    
+
     app.listen(port, () => {
         console.log(`Server listening on port ${port}`);
     });

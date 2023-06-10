@@ -6,7 +6,9 @@ const HOST = import.meta.env.VITE_API_HOST || `http://localhost:8080`
 const API_URL = HOST+`/api/v1`
 
 function login() {
-    fetch(API_URL+'/autenticazione', {
+    console.log("entrato");
+    console.log(API_URL+'/autenticazioni');
+    fetch(API_URL+'/autenticazioni', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify( { email: inputEmail.value, password: inputPassword.value } ),
@@ -18,12 +20,10 @@ function login() {
       // loggedUser.email = data.email;
       // loggedUser.id = data.id;
       // loggedUser.self = data.self;
-
-      emit('login', loggedUser)
       return;
     })
     .catch( error => console.error(error) ); // If there is any error you will catch them here
-
+    console.log(loggedUser);
 };
 
 function logout() {
@@ -34,6 +34,11 @@ export default {
   name: 'SignIn',
   components: {
     GoogleLogo
+  },
+  setup() {
+    return {
+      login
+    }
   }
 };
 </script>
@@ -46,13 +51,13 @@ export default {
     </div>
     <div class="mb-3 py-1">
       <label for="inputPassword" class="form-label">Password</label>
-      <input type="password" class="form-control" id="inputPassword" placeholder="Password">
+      <input type="text" class="form-control" id="inputPassword" placeholder="Password" aria-="password">
     </div>
     <div class="mb-3 py-1 form-check">
       <input type="checkbox" class="form-check-input" id="check">
       <label class="form-check-label" for="check">Ricordami</label>
     </div>
-    <button type="submit" class="btn btn-primary py-2 px-5 w-100" @click="login">Login</button>
+    <button type="submit" class="btn btn-primary py-2 px-5 w-100" @click.prevent="login">Login</button>
     <div class="py-2">
       <button class="mt-3 rounded border bg-white py-2 px-5 shadow hover:bg-gray-100 w-100">
         <div class="items-center justify-center space-x-10">

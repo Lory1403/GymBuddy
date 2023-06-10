@@ -9,8 +9,9 @@ const tokenCreator = require("./tokenCreator.js");
 
 router.post("", async function (req, res) {
   // find the user
+  
   var user = await utente.findOne({
-    email: req.body.email,
+    email: req.body.email
   });
 
   // user not found

@@ -1,6 +1,7 @@
 //var env = require("dotenv").config();             // non usato
 const express = require("express");
 const app = express();
+const cors = require('cors');
 //const user = require('./models/utente');
 //const passport = require('passport');
 const autenticazioni = require('./autenticazione');
@@ -21,8 +22,16 @@ app.use(express.urlencoded({ extended: true }));
 
 app.use((req, res, next) => {
   console.log(req.method + " " + req.url);
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, PATCH, DELETE');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+  res.setHeader('Access-Control-Allow-Credentials', 'true')
   next();
 });
+
+app.use(cors({
+  origin: 'http://localhost:5173'
+}));
 
 
 
