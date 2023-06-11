@@ -42,6 +42,9 @@ jobs:
         cd ./backend
         npm run build --if-present
     - run: |
+        cd ./frontend
+        npm run build
+    - run: |
         cd ./backend
         npm test
   deploy:
@@ -50,6 +53,9 @@ jobs:
     runs-on: ubuntu-latest
     needs: test
     steps:
+      - run: |
+          cd ./frontend
+          npm run build
       - name: Trigger deployment
         uses: sws2apps/render-deployment@main
         with:
