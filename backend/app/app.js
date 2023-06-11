@@ -55,8 +55,6 @@ app.use('/api/v1/appuntamenti', appuntamenti);
 
 
 app.get('*', (req, res) => {
-  // Invia il file principale del frontend Vue
-  console.log(path.join(__dirname, '../../frontend/dist/index.html'))
   res.sendFile(path.join(__dirname, '../../frontend/dist/index.html'));
 });
 
