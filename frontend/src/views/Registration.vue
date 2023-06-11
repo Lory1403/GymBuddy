@@ -1,8 +1,7 @@
 <script>
 import { loggedUser, isClear, setLoggedUser, clearLoggedUser } from '../states/loggedUser.js'
 
-const HOST = this.$apiBaseUrl;
-const API_URL = HOST + `/api/v1`
+const API_URL = this.$apiBaseUrl + `/api/v1`
 
 export default {
   name: "Registrazione",
