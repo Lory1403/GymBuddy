@@ -18,7 +18,10 @@ jobs:
     env:
       SUPER_SECRET: ${{ secrets.SUPER_SECRET }} # Must be set as a GitHub secret
       DB_URL: ${{ secrets.DB_URL }} # Must be set as a GitHub secret
-
+      GOOGLE_CIENT_ID: ${{secrets.GOOGLE_CIENT_ID}}
+      GOOGLE_CLIENT_SECRET: ${{secrets.GOOGLE_CLIENT_SECRET}}
+      GOOGLE_MAPS_PLATFORM: ${{secrets.GOOGLE_MAPS_PLATFORMlllllllllllllllllllllllllll}}
+    
     strategy:
       matrix:
         node-version: [14.x]
