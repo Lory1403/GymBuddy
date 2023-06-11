@@ -50,8 +50,8 @@ jobs:
     needs: test
     steps:
       - name: Trigger deployment
-        uses: sws2apps/render-deployment@main #consider using pin for dependabot auto update
+        uses: sws2apps/render-deployment@main
         with:
-          serviceId: ${{ secrets.RENDER_ID }}
-          apiKey: ${{ secrets.RENDER_API_KEY }}
-          multipleDeployment: false #optional, default true
+          apiKey: ${{secrets.RENDER_API_KEY}}
+          serviceId: ${{secrets.RENDER_ID}}
+          multipleDeployment: false
