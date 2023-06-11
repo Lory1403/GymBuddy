@@ -3,28 +3,7 @@ import GoogleLogo from '@/components/icons/GoogleLogo.vue';
 import { loggedUser, setLoggedUser, clearLoggedUser } from '../states/loggedUser.js'
 
 const HOST = import.meta.env.VITE_API_HOST || `http://localhost:8080`
-const API_URL = HOST+`/api/v1`
-
-function login() {
-    console.log("entrato");
-    console.log(API_URL+'/autenticazioni');
-    fetch(API_URL+'/autenticazioni', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify( { email: inputEmail.value, password: inputPassword.value } ),
-    })
-    .then((resp) => resp.json())
-    .then(function(data) {
-      setLoggedUser(data)
-      // loggedUser.token = data.token;
-      // loggedUser.email = data.email;
-      // loggedUser.id = data.id;
-      // loggedUser.self = data.self;
-      return;
-    })
-    .catch( error => console.error(error) ); // If there is any error you will catch them here
-    console.log(loggedUser);
-};
+const API_URL = HOST +`/api/v1`
 
 function logout() {
   clearLoggedUser()
@@ -35,9 +14,27 @@ export default {
   components: {
     GoogleLogo
   },
-  setup() {
-    return {
-      login
+  methods : {
+    redirect() {
+      this.$router.push('/home')
+    },
+    
+    login() {
+      fetch(API_URL+'/autenticazioni', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify( { email: inputEmail.value, password: inputPassword.value } ),
+      })
+      .then((resp) => resp.json())
+      .then( function(data) {
+        setLoggedUser(data)
+        // loggedUser.token = data.token;
+        // loggedUser.email = data.email;
+        // loggedUser.id = data.id;
+        // loggedUser.self = data.self;
+      })
+      .then( this.redirect() )
+      .catch( error => console.error(error) ); 
     }
   }
 };
