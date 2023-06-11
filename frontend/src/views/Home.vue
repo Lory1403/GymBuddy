@@ -25,7 +25,7 @@
 
 import { loggedUser, isClear, setLoggedUser, clearLoggedUser } from '../states/loggedUser.js'
 
-const HOST = 'https://gymbuddy-14b9.onrender.com'
+const HOST = this.$apiBaseUrl
 const API_URL = HOST + `/api/v1`
 
 export default {
