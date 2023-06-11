@@ -33,7 +33,9 @@ jobs:
       uses: actions/setup-node@v3
       with:
         node-version: ${{ matrix.node-version }}
-        cache: 'npm'
+        cache: |
+          cd ./backend
+          'npm'
     - run: |
         cd ./backend
         npm ci
