@@ -2,13 +2,13 @@ name: Node.js CI
 
 on:
   push:
-    branches: [ master ]
+    branches: [ main ]
   pull_request:
-    branches: [ master ]
+    branches: [ main ]
 
 jobs:
   test:
-
+    
     runs-on: ubuntu-latest
     
     # This is used to load Environment-level secrets, from the specified environment.
@@ -18,9 +18,9 @@ jobs:
     env:
       SUPER_SECRET: ${{ secrets.SUPER_SECRET }} # Must be set as a GitHub secret
       DB_URL: ${{ secrets.DB_URL }} # Must be set as a GitHub secret
-      GOOGLE_CIENT_ID: ${{secrets.GOOGLE_CIENT_ID}}
+      GOOGLE_CLIENT_ID: ${{secrets.GOOGLE_CLIENT_ID}}
       GOOGLE_CLIENT_SECRET: ${{secrets.GOOGLE_CLIENT_SECRET}}
-      GOOGLE_MAPS_PLATFORM: ${{secrets.GOOGLE_MAPS_PLATFORMlllllllllllllllllllllllllll}}
+      GOOGLE_MAPS_PLATFORM: ${{secrets.GOOGLE_MAPS_PLATFORM}}
     
     strategy:
       matrix:
@@ -33,10 +33,11 @@ jobs:
       uses: actions/setup-node@v3
       with:
         node-version: ${{ matrix.node-version }}
+        cache-dependency-path: ./backend
         cache: 'npm'
     - run: |
         cd ./backend
-        npm ci
+        npm install
     - run: |
         cd ./backend
         npm run build --if-present
