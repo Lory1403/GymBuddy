@@ -1,7 +1,7 @@
 <script>
 import { loggedUser, isClear, setLoggedUser, clearLoggedUser } from '../states/loggedUser.js'
 
-const API_URL = this.$apiBaseUrl + `/api/v1`
+let API_URL
 
 export default {
   name: "Registrazione",
@@ -17,16 +17,16 @@ export default {
           password: inputPassword.value
         })
       })
-      .then( async (resp) => {
-        let dati = await Promise.resolve( resp.json() );
-        if (dati.success) {
-          setLoggedUser(dati);
-          this.redirect();
-        }
-      })
-      .catch( (error) => {
-        console.error(error);
-      })
+        .then(async (resp) => {
+          let dati = await Promise.resolve(resp.json());
+          if (dati.success) {
+            setLoggedUser(dati);
+            this.redirect();
+          }
+        })
+        .catch((error) => {
+          console.error(error);
+        })
     },
 
     redirect() {
@@ -34,6 +34,7 @@ export default {
     }
   },
   created() {
+    API_URL = this.$apiBaseUrl + `/api/v1`;
     if (!isClear()) {
       this.redirect()
     }
@@ -69,6 +70,6 @@ export default {
   </form>
 
   <!--  <div v-if="showConfirmation">
-      <p>Registrazione avvenuta con successo!</p>
-    </div> -->
+          <p>Registrazione avvenuta con successo!</p>
+        </div> -->
 </template>
