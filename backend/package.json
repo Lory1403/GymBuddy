@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "run-dev": "nodemon index.prova.js",
+    "run-dev": "nodemon index.js",
+    "setup": "node scripts/setup.js",
     "test": "jest"
   },
   "author": "",

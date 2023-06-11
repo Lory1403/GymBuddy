@@ -68,7 +68,8 @@ router.post('', async (req, res)=>{
 
         utente.idPalestra = req.body.idPalestra;
 
-        utente.abbonamento = abbonamento._id;
+        utente.idAbbonamento = abbonamento._id;
+        utente.ruolo = "abb";
         
         res.status(200).json({
             self: 'api/v1/abbonamenti/' + abbonamento._id,
