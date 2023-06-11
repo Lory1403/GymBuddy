@@ -49,6 +49,11 @@ jobs:
         cd ./backend
         npm test
   deploy:
+
+    strategy:
+      matrix:
+        node-version: [14.x]
+
     name: Deploy to render
     environment: production
     runs-on: ubuntu-latest
