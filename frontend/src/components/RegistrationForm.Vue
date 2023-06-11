@@ -2,7 +2,7 @@
 import { ref, onMounted } from 'vue'
 import { loggedUser, setLoggedUser, clearLoggedUser } from '../states/loggedUser.js'
 
-const HOST = process.env.VITE_API_HOST || `http://localhost:8080`
+const HOST = 'https://gymbuddy-14b9.onrender.com'
 const API_URL = HOST+`/api/v1`
 /* 
 const email = ref('nome.cognome@unitn.com')
