@@ -2,6 +2,7 @@
 const express = require("express");
 const app = express();
 const cors = require('cors');
+const path = require('path');
 //const user = require('./models/utente');
 //const passport = require('passport');
 const autenticazioni = require('./autenticazione');
@@ -29,6 +30,8 @@ app.use((req, res, next) => {
   next();
 });
 
+app.use('/', express.static('../frontend/dist'));
+
 app.use(cors({
   origin: 'http://localhost:5173'
 }));
@@ -49,6 +52,13 @@ app.use('/api/v1/palestre', palestre);
 app.use('/api/v1/abbonamenti', abbonamenti);
 app.use('/api/v1/calendari', calendari); // dentro a calendario usiamo la api di appuntamento
 app.use('/api/v1/appuntamenti', appuntamenti);
+
+
+app.get('*', (req, res) => {
+  // Invia il file principale del frontend Vue
+  console.log(path.join(__dirname, '../../frontend/dist/index.html'))
+  res.sendFile(path.join(__dirname, '../../frontend/dist/index.html'));
+});
 
 
 /* Default 404 handler */
