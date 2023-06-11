@@ -49,29 +49,11 @@ jobs:
         cd ./backend
         npm test
   deploy:
-
-    strategy:
-      matrix:
-        node-version: [14.x]
-
     name: Deploy to render
     environment: production
     runs-on: ubuntu-latest
     needs: test
     steps:
-      - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v3
-        with:
-          node-version: ${{ matrix.node-version }}
-          cache-dependency-path: ./backend
-          cache: 'npm'
-      - run: |
-          cd ./backend
-          npm install
-      - run: |
-          cd ./frontend
-          npm install
-          npm run build
       - name: Trigger deployment
         uses: sws2apps/render-deployment@main
         with:
