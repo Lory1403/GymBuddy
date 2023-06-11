@@ -2,7 +2,7 @@ openapi: 3.0.0
 info:
   title: GymBuddy - OpenAPI 3.0
   description: |-
-    All'interno di questo documento verranno inserite tutte le principali API da noi creare. Ci sara' una spiegazione generale introduttiva e successivamente verranno esposti i metodi che essa utilizza, con i relativi risultati
+    All'interno di questo documento verranno inserite tutte le principali API da noi creare. Ci sara' una spiegazione generale introduttiva e successivamente verranno esposti i metodi che essa utilizza, con i relativi paramentri e restituzioni
     
     Some useful links:
     - [GymBUddy](https://github.com/Lory1403/GymBuddy/tree/main)
@@ -848,47 +848,64 @@ paths:
       tags:
         - Palestre
       summary: Ottieni elenco palestre
-      parameters:
-        - in: query
-          name: latitude
-          schema:
-            type: number
-            format: float
-          description: Latitudine per il calcolo delle distanze (opzionale)
-        - in: query
-          name: longitude
-          schema:
-            type: number
-            format: float
-          description: Longitudine per il calcolo delle distanze (opzionale)
       responses:
         '200':
           description: Elenco palestre ottenuto con successo
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    _id:
-                      type: string
-                      description: ID della palestra
-                    nome:
-                      type: string
-                      description: Nome della palestra
-                    indirizzo:
+                type: object
+                properties:
+                  palestre:
+                    type: array
+                    items:
                       type: object
                       properties:
-                        via:
+                        _id:
                           type: string
-                          description: Via della palestra
-                        numeroCivico:
+                        nome:
                           type: string
-                          description: Numero civico della palestra
-                        citta:
+                        personale:
+                          type: array
+                          items:
+                            type: string
+                        indirizzo:
+                          type: object
+                          properties:
+                            via:
+                              type: string
+                            numeroCivico:
+                              type: string
+                            citta:
+                              type: string
+                            provincia:
+                              type: string
+                            paese:
+                              type: string
+                            cap:
+                              type: integer
+                  distanze:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        palestra:
                           type: string
-                          description: Città della palestra
+                        distanza:
+                          type: number
+      parameters:
+        - in: header
+          name: latitude
+          schema:
+            type: number
+          required: false
+          description: Latitudine della posizione
+        - in: header
+          name: longitude
+          schema:
+            type: number
+          required: false
+          description: Longitudine della posizione
     post:
       tags:
         - Palestre
@@ -1316,3 +1333,8 @@ components:
           items:
             type: string
             
+     
+      
+
+
+  
