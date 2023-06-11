@@ -15,30 +15,36 @@ router.get('', (req, res) => {
 
     var geocoder = NodeGeocoder(options);
 
-    if (req.body.latitude && req.body.longitude) {
-        
-        console.log("esisto");
+    if (req.headers.latitude && req.headers.longitude) {
+
         var distanze = [];
         var indirizzo;
 
         Palestra.find({}).then( async (palestre) => {
             await Promise.all(palestre.map(async (palestra) => {
                 if (palestra.indirizzo.via && 
-                        palestra.indirizzo.numeroCivico &&
-                        palestra.indirizzo.citta) {
-                            indirizzo = palestra.indirizzo.via +
-                                        ", " + 
-                                        palestra.indirizzo.numeroCivico + 
-                                        ", " +
-                                        palestra.indirizzo.citta;  
-                            await geocoder.geocode(indirizzo).then( (res) => {
-                                distanze.push(Geolocation.distanceTo(  {lat: req.body.latitude, lon: req.body.longitude}, 
-                                                                    {lat: res[0].latitude, lon: res[0].longitude}));                                                                 
-                            });
-                            
-                        }
+                    palestra.indirizzo.numeroCivico &&
+                    palestra.indirizzo.citta) {
+                        indirizzo = palestra.indirizzo.via +
+                                    ", " + 
+                                    palestra.indirizzo.numeroCivico + 
+                                    ", " +
+                                    palestra.indirizzo.citta; 
+                        await geocoder.geocode(indirizzo).then( (res) => {
+                            distanze.push({
+                                palestra: palestra._id,
+                                
+                                distanza: Geolocation.distanceTo(
+                                    {lat: Number.parseFloat( req.headers.latitude ), lon : Number.parseFloat( req.headers.longitude )}, 
+                                    {lat: res[0].latitude, lon: res[0].longitude})                                                               
+                                })/1000;
+                        }); 
+                }
             }));
-            res.status(200).send(palestre + "\n" + distanze);
+            res.status(200).send({
+                palestre: palestre,
+                distanze: distanze
+            });
         });
     }
     else {
