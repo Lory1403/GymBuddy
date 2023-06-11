@@ -1,8 +1,19 @@
-<script setup>
+<script>
 import { RouterLink, RouterView } from 'vue-router'
+import { loggedUser, isClear, setLoggedUser, clearLoggedUser } from './states/loggedUser.js'
 
-import { ref, onMounted } from 'vue'
-
+export default {
+  methods: {
+    redirect() {
+      this.$router.push('/')
+    }
+  },
+  created() {
+    if (!isClear()) {
+      this.redirect()
+    }
+  }
+};
 </script>
 
 <template>
@@ -11,16 +22,16 @@ import { ref, onMounted } from 'vue'
     <div class="container-fluid">
       <!-- DA IMPLEMENTARE -->
       <!-- Quando clicco sul logo se non sono loggato mi rimanda a pagina apertura altrimenti mi rimanda alla home-->
-      <a class="navbar-brand" href="/" onclick="handleclick">
+      <a class="navbar-brand" @click="redirect">
         <!-- fine evento click su logo-->
         <img src="@/assets/logo.png" alt="logo-palestra" width="150" class="d-inline-block align-text-center">
         GymBuddy
       </a>
 
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown"
+      <!-- <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown"
         aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
-      </button>
+      </button> -->
      <!--  <div class="collapse navbar-collapse" id="navbarNavDropdown">
         <ul class="navbar-nav">
           <li class="nav-item">

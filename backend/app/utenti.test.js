@@ -77,13 +77,16 @@ describe("GET /api/v1/utenti/me", () => {
     });
 
     it('Dovrebbe restituire le informazioni dell\'utente', async () => {
+        let loggedUser = {
+            email: 'test@test.com'
+        };
         await request(app)
             .get('/api/v1/utenti/me')
+            .set({
+                'loggedUser': loggedUser
+            })
             .send({
-                token: token,
-                loggedUser: {
-                    email: "test@test.com"
-                }
+                token: token
             })
             .expect(200)
             .expect( (res) => {

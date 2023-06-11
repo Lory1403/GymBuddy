@@ -1,53 +1,73 @@
-  <template>
-    <form class="w-50 text-light position-absolute top-50 start-50 translate-middle">
-        <div class="mb-3 py-1">
-        <label for="inputName" class="form-label">Name</label>
-        <input type="Name" class="form-control" id="inputName" placeholder="Name">
-      </div>
-      <div class="mb-3 py-1">
-        <label for="inputSurname" class="form-label">Surname</label>
-        <input type="Surname" class="form-control" id="Surname" placeholder="Surname">
-      </div>
- <!--      <div class="mb-3 py-1">
-    <label for="select-option"> Seleziona tipo utente: </label>
-    <select id="select-option" v-model="selectedOption">
-      <option v-for="option in options" :key="option.value" :value="option.value">{{ option.label }}</option>
-    </select>
-  </div> -->
-      <div class="mb-3 py-1">
-        <label for="inputEmail" class="form-label">Indirizzo email</label>
-        <input type="email" class="form-control" id="inputEmail" placeholder="name@example.com">
-      </div>
-      <div class="mb-3 py-1">
-        <label for="inputPassword" class="form-label">Password</label>
-        <input type="password" class="form-control" id="inputPassword" placeholder="Password">
-      </div>
-      <button type="submit" class="btn btn-primary py-2 px-5 w-100">Registration</button>
-      <div>
+<script>
+import { loggedUser, isClear, setLoggedUser, clearLoggedUser } from '../states/loggedUser.js'
+
+const HOST = import.meta.env.VITE_API_HOST || `http://localhost:8080`
+const API_URL = HOST + `/api/v1`
+
+export default {
+  name: "Registrazione",
+  methods: {
+    registrazione() {
+      fetch(API_URL + '/registrazioni', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          nome: inputName.value,
+          cognome: inputSurname.value,
+          email: inputEmail.value,
+          password: inputPassword.value
+        })
+      })
+      .then( resp => resp.json())
+      .then( function(data) {
+        setLoggedUser(data)
+      })
+      .then( this.redirect() )
+      .catch( (error) => {
+        console.error(error);
+      })
+    },
+
+    redirect() {
+      this.$router.push('/home')
+    }
+  },
+  created() {
+    if (!isClear()) {
+      this.redirect()
+    }
+  }
+};
+</script> 
+
+<template>
+  <form class="w-50 text-light position-absolute top-50 start-50 translate-middle">
+    <div class="mb-3 py-1">
+      <label for="inputName" class="form-label">Name</label>
+      <input type="Name" class="form-control" id="inputName" placeholder="Name">
+    </div>
+    <div class="mb-3 py-1">
+      <label for="inputSurname" class="form-label">Surname</label>
+      <input type="Surname" class="form-control" id="inputSurname" placeholder="Surname">
+    </div>
+    <div class="mb-3 py-1">
+      <label for="inputEmail" class="form-label">Indirizzo email</label>
+      <input type="email" class="form-control" id="inputEmail" placeholder="name@example.com"
+        autocomplete="current-email">
+    </div>
+    <div class="mb-3 py-1">
+      <label for="inputPassword" class="form-label">Password</label>
+      <input type="password" class="form-control" id="inputPassword" placeholder="Password"
+        autocomplete="current-password">
+    </div>
+    <button type="submit" class="btn btn-primary py-2 px-5 w-100" @click.prevent="registrazione">Registrati</button>
+    <div>
       <label>Sei già registrato? </label>
       <RouterLink class="w-auto nav-link d-inline-block" to="/login"> Login</RouterLink>
     </div>
-    </form>
+  </form>
 
-   <!--  <div v-if="showConfirmation">
+  <!--  <div v-if="showConfirmation">
       <p>Registrazione avvenuta con successo!</p>
     </div> -->
-
-  </template>
-  
-
-  <!-- <script>
-  export default {
-    data() {
-      return {
-        selectedOption: '', 
-        options: [ 
-          { label: 'Utente', value: 'utente' },
-          { label: 'Personale di Sala', value: 'personaleSala' },
-          { label: 'Personale amministrativo', value: 'personaleAmministrativo' }
-        ]
-      };
-    }
-  };
-  </script> 
- -->
+</template>

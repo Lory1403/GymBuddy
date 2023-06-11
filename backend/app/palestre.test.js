@@ -61,10 +61,12 @@ describe('GET /api/v1/palestre', () => {
     it('Dovrebbe restituire le palestre con la distanza', async () => {
         await request(app)
                 .get('/api/v1/palestre')
+                .set({
+                    'latitude': 1.0,
+                    'longitude': 1.0 
+                })
                 .send({
-                    token: token,
-                    latitude: 1.0,
-                    longitude: 1.0
+                    token: token
                 })
                 .expect(200)
                 .expect( (res) => {

@@ -34,10 +34,10 @@ router.get('', (req, res) => {
                             distanze.push({
                                 palestra: palestra._id,
                                 
-                                distanza: Geolocation.distanceTo(
+                                distanza: (Geolocation.distanceTo(
                                     {lat: Number.parseFloat( req.headers.latitude ), lon : Number.parseFloat( req.headers.longitude )}, 
-                                    {lat: res[0].latitude, lon: res[0].longitude})                                                               
-                                })/1000;
+                                    {lat: res[0].latitude, lon: res[0].longitude}) / 1000 )                                                             
+                                })
                         }); 
                 }
             }));
@@ -66,7 +66,9 @@ router.get('/:id', async (req, res) => {
             self: 'api/v1/palestre/' + palestra._id,
             nome: palestra.nome,
             personale: palestra.personale,
-            indirizzo: palestra.indirizzo 
+            indirizzo: palestra.indirizzo,
+            //calendariCorsi: req.body.calendariCorsi,
+            //abbonamentiDisponibili: req.body.abbonamentiDisponibili
         });
         return;
     }

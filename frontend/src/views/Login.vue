@@ -1,16 +1,12 @@
 <script>
 import GoogleLogo from '@/components/icons/GoogleLogo.vue';
-import { loggedUser, setLoggedUser, clearLoggedUser } from '../states/loggedUser.js'
+import { loggedUser, isClear, setLoggedUser, clearLoggedUser } from '../states/loggedUser.js'
 
 const HOST = import.meta.env.VITE_API_HOST || `http://localhost:8080`
 const API_URL = HOST +`/api/v1`
 
-function logout() {
-  clearLoggedUser()
-}
-
 export default {
-  name: 'SignIn',
+  name: 'Login',
   components: {
     GoogleLogo
   },
@@ -25,16 +21,27 @@ export default {
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify( { email: inputEmail.value, password: inputPassword.value } ),
       })
-      .then((resp) => resp.json())
-      .then( function(data) {
-        setLoggedUser(data)
-        // loggedUser.token = data.token;
-        // loggedUser.email = data.email;
-        // loggedUser.id = data.id;
-        // loggedUser.self = data.self;
+      .then( async (resp) => {
+        let dati = await Promise.resolve( resp.json() );
+        if (dati.success) {
+          setLoggedUser(dati);
+          this.redirect();
+        }
       })
-      .then( this.redirect() )
       .catch( error => console.error(error) ); 
+    }, 
+
+    // loginGoogle() {
+    //   fetch(API_URL+'/auth/google', {
+    //       method: 'GET',
+    //       headers: { 'Content-Type': 'application/json' }
+    //   })
+    //   .catch( error => console.error(error) ); 
+    // }
+  },
+  created() {
+    if (!isClear()) {
+      this.redirect()
     }
   }
 };
@@ -48,20 +55,16 @@ export default {
     </div>
     <div class="mb-3 py-1">
       <label for="inputPassword" class="form-label">Password</label>
-      <input type="text" class="form-control" id="inputPassword" placeholder="Password" aria-="password">
+      <input type="password" class="form-control" id="inputPassword" placeholder="Password" autocomplete="current-password">
     </div>
-    <div class="mb-3 py-1 form-check">
-      <input type="checkbox" class="form-check-input" id="check">
-      <label class="form-check-label" for="check">Ricordami</label>
-    </div>
-    <button type="submit" class="btn btn-primary py-2 px-5 w-100" @click.prevent="login">Login</button>
-    <div class="py-2">
-      <button class="mt-3 rounded border bg-white py-2 px-5 shadow hover:bg-gray-100 w-100">
+    <button type="submit" class="mt-3 btn btn-primary py-2 px-5 w-100" @click.prevent="login">Login</button>
+    <div class="mt-3 py-2">
+      <button class="rounded border bg-white py-2 px-5 shadow hover:bg-gray-100 w-100">
         <div class="items-center justify-center space-x-10">
           <GoogleLogo class="p-1 flex-fill" />
           <span class="p-1 flex-fill text-center items-center align-right font-semibold text-gray-200">Login con
             Google</span>
-        </div>
+        </div> ------ [ IN FASE DI SVILUPPO ] ------
       </button>
     </div>
     <div>

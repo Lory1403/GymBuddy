@@ -1,19 +1,14 @@
 <template>
   <div class="page">
  <!-- Info palestra -->
-    <div class="d-flex">
-      <div class="d-flex align-items-center justify-content-center flex-column"
-        style="width: 50%; height: 300px">
-        <h1>Nome palestra</h1>
-        <h2>INFORMAZIONI</h2>
-        <h3>via nCivico</h3>
-        <h4>citta (provincia), cap</h4>
-        <h4>Distanza</h4>
-      </div>
+    <div class="d-flex align-items-center justify-content-center flex-column"
+        style="height: 300px">
+        <h1>{{ nome }}</h1>
+        <h2>{{ indirizzo1 }}</h2>
+        <h3>{{ indirizzo2 }}</h3>
    <!-- Info palestra -->
-      <div class=" d-flex align-items-center justify-content-center"
+      <!-- <div class=" d-flex align-items-center justify-content-center"
         style="width: 50%; height: 300px">
-        <!-- Carousel foto -->
         <div id="carouselExampleControls" class="carousel slide" data-ride="carousel">
           <div class="carousel-inner">
             <div class="carousel-item active">
@@ -38,19 +33,17 @@
             <span class="sr-only">Next</span>
           </a>
         </div>
-        <!-- End Carousel foto -->
-      </div>
+      </div> -->
     </div>
 
     <div class="container">
-      <div class="subscription-list">
+      <div class="subscription-list" style="width: 400px, margin-right: 3em">
         <h2>ABBONAMENTI </h2>
         <ul>
-          <li v-for="abbonamento in abbonamenti" :key="abbonamento.id" class="d-flex">
-            <span class="ml-2">{{ abbonamento.nome }}</span>
-            <span>{{ abbonamento.prezzo }}</span>
-            <a href="#" class="btn btn-secondary btn-lg active" role="button" aria-pressed="true" @click="handleClick">Acquista</a>
-            <!-- <button @click="acquistaAbbonamento(abbonamento.id)">Acquista</button> -->
+          <li v-for="abbonamento in abbonamenti" :key="abbonamento.id" class="d-flex justify-content-evenly">
+            <label class="ml-2">{{ abbonamento.nome }}</label>
+            <label>{{ abbonamento.prezzo }}</label>
+            <a href="#" class="btn btn-secondary btn-lg active" role="button" aria-pressed="true">Acquista</a>
           </li>
         </ul>
       </div>
@@ -61,8 +54,7 @@
             <span class="ml-2">{{ corso.nome }}</span>
             <span>{{ corso.data }}</span>
             <span>{{ corso.ora }}</span>
-            <a href="#" class="btn btn-secondary btn-lg active" role="button" aria-pressed="true" @click="handleClick">Prenota</a>
-            <!-- <button @click="prenotaPosto(corso.id)">Prenota posto</button> -->
+            <a href="#" class="btn btn-secondary btn-lg active" role="button" aria-pressed="true">Prenota</a>
           </li>
         </ul>
       </div>
@@ -71,10 +63,21 @@
 </template>
   
 <script>
+
+import { loggedUser, isClear, setLoggedUser, clearLoggedUser } from '../states/loggedUser.js'
+
+const HOST = import.meta.env.VITE_API_HOST || `http://localhost:8080`
+const API_URL = HOST + `/api/v1`
+
 export default {
   data() {
     return {
-      //Da prende da DB
+      nome: null,
+      personale: null,
+      indirizzo: null,
+      indirizzo1: null,
+      indirizzo2: null,
+      
       abbonamenti: [
         { id: 1, nome: 'Mensile', prezzo: 10 },
         { id: 2, nome: 'Trimestrale', prezzo: 15 },
@@ -88,13 +91,51 @@ export default {
     };
   },
   methods: {
-    acquistaAbbonamento(abbonamentoId) {
-      // Logica per l'acquisto dell'abbonamento
+    // acquistaAbbonamento(abbonamentoId) {
+    //   // Logica per l'acquisto dell'abbonamento
+    // },
+    // prenotaPosto(corsoId) {
+    //   // Logica per la prenotazione del posto nel corso
+    // },
+    getPalestra() {
+      fetch(API_URL + window.location.pathname, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          "x-access-token": loggedUser.token
+        }
+      })
+      .then(async (resp) => {
+        let dati = await Promise.resolve(resp.json());
+        this.nome = dati.nome;
+        this.personale = dati.personale;
+        this.indirizzo = dati.indirizzo;
+        this.getIndirizzoP1(dati.indirizzo);
+        this.getIndirizzoP2(dati.indirizzo);
+      })
+      .catch(error => console.error(error));
     },
-    prenotaPosto(corsoId) {
-      // Logica per la prenotazione del posto nel corso
+
+    getIndirizzoP1(ind) {
+      let ret = "";
+      if (ind.via) ret += ind.via;
+      if (ind.numeroCivico) ret += " " + ind.numeroCivico;
+      this.indirizzo1 = ret;
     },
+
+    getIndirizzoP2(ind) {
+      let ret = "";
+      if (ind.citta) ret += ind.citta;
+      if (ind.provincia) ret += (" (" + ind.provincia + ")");
+      if (ind.cap) ret += (" " + ind.cap);
+      if (ind.paese) ret += (" " + ind.paese);
+      this.indirizzo2 = ret;
+    }
   },
+  created() {
+    this.getPalestra();
+  }
+
 };
 </script>
   
@@ -132,7 +173,6 @@ export default {
 
 ul {
   list-style-type: none;
-  padding: 0;
 }
 
 li {

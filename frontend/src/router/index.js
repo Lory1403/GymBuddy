@@ -23,7 +23,7 @@ const router = createRouter({
       component: () => import('../views/Registration.vue')
     },
     {
-      path: '/palestra',
+      path: '/palestre/:idPalestra',
       name: 'palestra',
       component: () => import('../views/Palestra.vue')
     },
@@ -35,7 +35,7 @@ const router = createRouter({
     {
       path: '/home',
       name: 'home',
-      component: () => import('../views/Home.vue')
+      component: () => import('../views/Home.vue')  
     }
   ]
 })

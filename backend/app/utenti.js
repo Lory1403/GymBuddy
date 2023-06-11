@@ -5,7 +5,7 @@ const Calendario = require('./models/calendario');
 
 router.get('/me', async (req,res) => {
 
-    let utente = await Utente.findOne({email: req.body.loggedUser.email});
+    let utente = await Utente.findOne({email: req.loggedUser.email});
 
     res.status(200).json({
         self: '/api/v1/utenti/' + utente._id,
