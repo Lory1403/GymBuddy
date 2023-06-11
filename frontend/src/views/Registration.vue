@@ -18,11 +18,13 @@ export default {
           password: inputPassword.value
         })
       })
-      .then( resp => resp.json())
-      .then( function(data) {
-        setLoggedUser(data)
+      .then( async (resp) => {
+        let dati = await Promise.resolve( resp.json() );
+        if (dati.success) {
+          setLoggedUser(dati);
+          this.redirect();
+        }
       })
-      .then( this.redirect() )
       .catch( (error) => {
         console.error(error);
       })
