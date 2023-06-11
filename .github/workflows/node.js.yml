@@ -33,7 +33,7 @@ jobs:
       uses: actions/setup-node@v3
       with:
         node-version: ${{ matrix.node-version }}
-        path: ./backend
+        cache-dependency-path: ./backend
         cache: 'npm'
     - run: npm ci
       working-directory: ./backend
