@@ -1,7 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router'
 
 const router = createRouter({
-  history: createWebHistory('https://gymbuddy-14b9.onrender.com'),
+  history: createWebHistory(),
   routes: [
     {
       path: '/',
