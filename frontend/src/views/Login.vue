@@ -2,33 +2,33 @@
 import GoogleLogo from '@/components/icons/GoogleLogo.vue';
 import { loggedUser, isClear, setLoggedUser, clearLoggedUser } from '../states/loggedUser.js'
 
-const API_URL = this.$apiBaseUrl +`/api/v1`
+let API_URL
 
 export default {
   name: 'Login',
   components: {
     GoogleLogo
   },
-  methods : {
+  methods: {
     redirect() {
       this.$router.push('/home')
     },
-    
+
     login() {
-      fetch(API_URL+'/autenticazioni', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify( { email: inputEmail.value, password: inputPassword.value } ),
+      fetch(API_URL + '/autenticazioni', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: inputEmail.value, password: inputPassword.value }),
       })
-      .then( async (resp) => {
-        let dati = await Promise.resolve( resp.json() );
-        if (dati.success) {
-          setLoggedUser(dati);
-          this.redirect();
-        }
-      })
-      .catch( error => console.error(error) ); 
-    }, 
+        .then(async (resp) => {
+          let dati = await Promise.resolve(resp.json());
+          if (dati.success) {
+            setLoggedUser(dati);
+            this.redirect();
+          }
+        })
+        .catch(error => console.error(error));
+    },
 
     // loginGoogle() {
     //   fetch(API_URL+'/auth/google', {
@@ -39,6 +39,7 @@ export default {
     // }
   },
   created() {
+    API_URL = this.$apiBaseUrl + `/api/v1`;
     if (!isClear()) {
       this.redirect()
     }
@@ -54,7 +55,8 @@ export default {
     </div>
     <div class="mb-3 py-1">
       <label for="inputPassword" class="form-label">Password</label>
-      <input type="password" class="form-control" id="inputPassword" placeholder="Password" autocomplete="current-password">
+      <input type="password" class="form-control" id="inputPassword" placeholder="Password"
+        autocomplete="current-password">
     </div>
     <button type="submit" class="mt-3 btn btn-primary py-2 px-5 w-100" @click.prevent="login">Login</button>
     <div class="mt-3 py-2">

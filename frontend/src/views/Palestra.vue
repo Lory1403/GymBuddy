@@ -1,12 +1,11 @@
 <template>
   <div class="page">
- <!-- Info palestra -->
-    <div class="d-flex align-items-center justify-content-center flex-column"
-        style="height: 300px">
-        <h1>{{ nome }}</h1>
-        <h2>{{ indirizzo1 }}</h2>
-        <h3>{{ indirizzo2 }}</h3>
-   <!-- Info palestra -->
+    <!-- Info palestra -->
+    <div class="d-flex align-items-center justify-content-center flex-column" style="height: 300px">
+      <h1>{{ nome }}</h1>
+      <h2>{{ indirizzo1 }}</h2>
+      <h3>{{ indirizzo2 }}</h3>
+      <!-- Info palestra -->
       <!-- <div class=" d-flex align-items-center justify-content-center"
         style="width: 50%; height: 300px">
         <div id="carouselExampleControls" class="carousel slide" data-ride="carousel">
@@ -66,7 +65,7 @@
 
 import { loggedUser, isClear, setLoggedUser, clearLoggedUser } from '../states/loggedUser.js'
 
-const API_URL = this.$apiBaseUrl + `/api/v1`
+let API_URL
 
 export default {
   data() {
@@ -76,7 +75,7 @@ export default {
       indirizzo: null,
       indirizzo1: null,
       indirizzo2: null,
-      
+
       abbonamenti: [
         { id: 1, nome: 'Mensile', prezzo: 10 },
         { id: 2, nome: 'Trimestrale', prezzo: 15 },
@@ -104,15 +103,15 @@ export default {
           "x-access-token": loggedUser.token
         }
       })
-      .then(async (resp) => {
-        let dati = await Promise.resolve(resp.json());
-        this.nome = dati.nome;
-        this.personale = dati.personale;
-        this.indirizzo = dati.indirizzo;
-        this.getIndirizzoP1(dati.indirizzo);
-        this.getIndirizzoP2(dati.indirizzo);
-      })
-      .catch(error => console.error(error));
+        .then(async (resp) => {
+          let dati = await Promise.resolve(resp.json());
+          this.nome = dati.nome;
+          this.personale = dati.personale;
+          this.indirizzo = dati.indirizzo;
+          this.getIndirizzoP1(dati.indirizzo);
+          this.getIndirizzoP2(dati.indirizzo);
+        })
+        .catch(error => console.error(error));
     },
 
     getIndirizzoP1(ind) {
@@ -132,6 +131,7 @@ export default {
     }
   },
   created() {
+    API_URL = this.$apiBaseUrl + `/api/v1`;
     this.getPalestra();
   }
 
@@ -186,5 +186,6 @@ button {
   background-color: lightgray;
   color: black;
   padding: 5px 10px;
-}</style>
+}
+</style>
   

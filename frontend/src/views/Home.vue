@@ -7,7 +7,8 @@
         <h3 class="mb-2">{{ palestra.nome }}</h3>
         <p class="mb-1">{{ getIndirizzo(palestra.indirizzo) }}</p>
         <p class="mb-3">Distanza: {{ getDistanza(palestra.id) }} km</p>
-        <a class="btn btn-secondary btn-lg active" role="button" aria-pressed="true" @click="esplora(palestra._id)">Esplora</a>
+        <a class="btn btn-secondary btn-lg active" role="button" aria-pressed="true"
+          @click="esplora(palestra._id)">Esplora</a>
       </li>
       <!-- <li v-for="palestra in palestre" :key="palestra.id" style="margin-right: 50px!important;"
         class="d-flex align-items-center justify-content-center flex-column">
@@ -25,7 +26,7 @@
 
 import { loggedUser, isClear, setLoggedUser, clearLoggedUser } from '../states/loggedUser.js'
 
-const API_URL = this.$apiBaseUrl + `/api/v1`
+let API_URL
 
 export default {
   data() {
@@ -46,12 +47,12 @@ export default {
           longitude: this.position.coords.longitude
         }
       })
-      .then(async (resp) => {
-        let dati = await Promise.resolve(resp.json());
-        this.palestre = dati.palestre;
-        this.distanze = dati.distanze;
-      })
-      .catch(error => console.error(error));
+        .then(async (resp) => {
+          let dati = await Promise.resolve(resp.json());
+          this.palestre = dati.palestre;
+          this.distanze = dati.distanze;
+        })
+        .catch(error => console.error(error));
     },
 
     getIndirizzo(indirizzo) {
@@ -110,6 +111,7 @@ export default {
     }
   },
   created() {
+    API_URL = this.$apiBaseUrl + `/api/v1`;
     if (isClear()) {
       this.redirect()
     }
@@ -146,8 +148,8 @@ button {
   cursor: pointer;
 }
 
-ol, ul {
-}
+ol,
+ul {}
 
 button:hover {
   background-color: #999;
